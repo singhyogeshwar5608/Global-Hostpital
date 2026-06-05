@@ -64,6 +64,8 @@ import PatientsList from "./PatientsList";
 import PatientRegistration from "./PatientRegistration";
 import PatientReports from "./PatientReports";
 import PatientBookings from "./PatientBookings";
+import AppointmentsList from "./AppointmentsList";
+import AppointmentSlotManager from "./AppointmentSlotManager";
 import { usePatientStore } from "@/store/patient-store";
 
 // ─── Page type ───────────────────────────────────────────────
@@ -77,6 +79,7 @@ type PageKey =
   | "patient-reports"
   | "patient-bookings"
   | "appointments"
+  | "appointment-slots"
   | "hospitals"
   | "labs"
   | "medicines"
@@ -187,6 +190,7 @@ export default function AdminDashboard() {
     if (activePage === "package-registration") return "Package Registration";
     if (activePage === "package-bookings") return "Package Bookings";
     if (activePage === "lab-registration") return "Lab Registration";
+    if (activePage === "appointment-slots") return "Doctor Slot Management";
     return item?.label || "Dashboard";
   };
 
@@ -224,7 +228,8 @@ export default function AdminDashboard() {
               (item.page === "medicines" && activePage === "medicine-orders") ||
               (item.page === "packages" && activePage === "package-registration") ||
               (item.page === "packages" && activePage === "package-bookings") ||
-              (item.page === "labs" && activePage === "lab-registration");
+              (item.page === "labs" && activePage === "lab-registration") ||
+              (item.page === "appointments" && activePage === "appointment-slots");
             return (
               <button
                 key={item.label}
@@ -370,6 +375,26 @@ export default function AdminDashboard() {
             </div>
           )}
 
+          {/* ─── Appointments Pages ─── */}
+          {activePage === "appointments" && (
+            <AppointmentsList
+              onManageSlots={() => setActivePage("appointment-slots")}
+            />
+          )}
+
+          {activePage === "appointment-slots" && (
+            <div>
+              <button
+                onClick={() => setActivePage("appointments")}
+                className="inline-flex items-center gap-1.5 text-sm text-[#1e3a5f] font-semibold mb-4 hover:underline"
+              >
+                <ChevronDown size={14} className="-rotate-90" />
+                Back to Appointments
+              </button>
+              <AppointmentSlotManager onBack={() => setActivePage("appointments")} />
+            </div>
+          )}
+
           {activePage === "doctors" && (
             <DoctorsList
               onAddDoctor={() => setActivePage("doctor-registration")}
@@ -494,7 +519,7 @@ export default function AdminDashboard() {
           )}
 
           {/* Placeholder for other pages */}
-          {!["dashboard", "doctors", "doctor-registration", "field-visibility", "patients", "patient-registration", "patient-reports", "patient-bookings", "medicines", "medicine-registration", "medicine-orders", "packages", "package-registration", "package-bookings", "labs", "lab-registration"].includes(activePage) && (
+          {!["dashboard", "doctors", "doctor-registration", "field-visibility", "patients", "patient-registration", "patient-reports", "patient-bookings", "appointments", "appointment-slots", "medicines", "medicine-registration", "medicine-orders", "packages", "package-registration", "package-bookings", "labs", "lab-registration"].includes(activePage) && (
             <PlaceholderPage title={getPageLabel()} />
           )}
         </main>
