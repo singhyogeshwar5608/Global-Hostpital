@@ -7,11 +7,9 @@ const partners = [
   { name: "LabCorp", color: "#1a73e8" },
   { name: "Quest Diagnostics", color: "#34a853" },
   { name: "Bio-Rad", color: "#cc0000" },
-  { name: "Thermo Fisher", color: "#0033a0" },
+  { name: "ThermoFisher Scientific", color: "#0033a0" },
   { name: "Mayo Clinic", color: "#005ca9" },
   { name: "Sonic Healthcare", color: "#6b21a8" },
-  { name: "LabCorp", color: "#1a73e8" },
-  { name: "Quest Diagnostics", color: "#34a853" },
 ];
 
 export default function Partners() {
@@ -42,56 +40,47 @@ export default function Partners() {
   const scroll = (dir: "left" | "right") => {
     const el = scrollRef.current;
     if (!el) return;
-    const cardWidth = 160;
+    const cardWidth = 180;
     el.scrollBy({ left: dir === "left" ? -cardWidth : cardWidth, behavior: "smooth" });
   };
 
   return (
-    <section className="py-14 lg:py-16 bg-white border-t border-gray-100">
+    <section className="py-10 lg:py-12 bg-gray-50">
       <div className="max-w-[1200px] mx-auto px-6">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <span className="inline-block text-teal font-semibold text-[11px] mb-2 tracking-widest uppercase">
+        {/* Header - Left Aligned */}
+        <div className="mb-6">
+          <span className="inline-block text-teal font-semibold text-[11px] tracking-widest uppercase">
             Trusted Partners
           </span>
-          <h2 className="text-2xl font-bold text-gray-900">
+          <h2 className="text-xl font-bold text-gray-900 mt-1">
             Our Partners
           </h2>
         </div>
 
         {/* Logo Row with Arrows */}
-        <div className="relative">
+        <div className="relative flex items-center">
           {/* Left Arrow */}
           <button
             onClick={() => scroll("left")}
-            className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-white border border-gray-200 flex items-center justify-center text-gray-400 hover:text-teal hover:border-teal/30 hover:shadow-md transition-all shadow-sm -ml-1"
+            className="flex-shrink-0 w-9 h-9 rounded-full bg-white border border-gray-200 flex items-center justify-center text-gray-500 hover:text-teal hover:border-teal/30 hover:shadow-md transition-all mr-3"
             style={{ display: canScrollLeft ? "flex" : "none" }}
           >
-            <ChevronLeft size={16} />
-          </button>
-
-          {/* Right Arrow */}
-          <button
-            onClick={() => scroll("right")}
-            className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-white border border-gray-200 flex items-center justify-center text-gray-400 hover:text-teal hover:border-teal/30 hover:shadow-md transition-all shadow-sm -mr-1"
-            style={{ display: canScrollRight ? "flex" : "none" }}
-          >
-            <ChevronRight size={16} />
+            <ChevronLeft size={18} />
           </button>
 
           {/* Logos Scrollable Row */}
           <div
             ref={scrollRef}
-            className="flex gap-4 overflow-x-auto scroll-smooth pb-1 px-6"
+            className="flex gap-5 overflow-x-auto scroll-smooth flex-1"
             style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
           >
             {partners.map((partner, i) => (
               <div
                 key={`${partner.name}-${i}`}
-                className="flex-shrink-0 w-36 h-16 rounded-xl border border-gray-200 bg-white flex items-center justify-center hover:border-teal/20 hover:shadow-md transition-all cursor-pointer group"
+                className="flex-shrink-0 w-44 h-20 bg-white flex items-center justify-center cursor-pointer"
               >
                 <span
-                  className="text-sm font-bold tracking-wide group-hover:brightness-110 transition-all"
+                  className="text-sm font-medium tracking-wide text-center leading-tight"
                   style={{ color: partner.color }}
                 >
                   {partner.name}
@@ -99,6 +88,15 @@ export default function Partners() {
               </div>
             ))}
           </div>
+
+          {/* Right Arrow */}
+          <button
+            onClick={() => scroll("right")}
+            className="flex-shrink-0 w-9 h-9 rounded-full bg-white border border-gray-200 flex items-center justify-center text-gray-500 hover:text-teal hover:border-teal/30 hover:shadow-md transition-all ml-3"
+            style={{ display: canScrollRight ? "flex" : "none" }}
+          >
+            <ChevronRight size={18} />
+          </button>
         </div>
       </div>
 
