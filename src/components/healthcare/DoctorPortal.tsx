@@ -35,6 +35,7 @@ import {
   XCircle,
   AlertTriangle,
   Lock,
+  Star,
 } from "lucide-react";
 
 interface Props {
