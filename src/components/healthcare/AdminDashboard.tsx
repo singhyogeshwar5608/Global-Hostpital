@@ -58,6 +58,8 @@ import MedicineOrders from "./MedicineOrders";
 import PackagesList from "./PackagesList";
 import PackageRegistration from "./PackageRegistration";
 import PackageBookings from "./PackageBookings";
+import LabsList from "./LabsList";
+import LabRegistration from "./LabRegistration";
 
 // ─── Page type ───────────────────────────────────────────────
 type PageKey =
@@ -75,6 +77,7 @@ type PageKey =
   | "packages"
   | "package-registration"
   | "package-bookings"
+  | "lab-registration"
   | "prescriptions"
   | "lab-reports"
   | "payments"
@@ -171,6 +174,7 @@ export default function AdminDashboard() {
     if (activePage === "medicine-orders") return "Medicine Orders";
     if (activePage === "package-registration") return "Package Registration";
     if (activePage === "package-bookings") return "Package Bookings";
+    if (activePage === "lab-registration") return "Lab Registration";
     return item?.label || "Dashboard";
   };
 
@@ -204,7 +208,8 @@ export default function AdminDashboard() {
               (item.page === "medicines" && activePage === "medicine-registration") ||
               (item.page === "medicines" && activePage === "medicine-orders") ||
               (item.page === "packages" && activePage === "package-registration") ||
-              (item.page === "packages" && activePage === "package-bookings");
+              (item.page === "packages" && activePage === "package-bookings") ||
+              (item.page === "labs" && activePage === "lab-registration");
             return (
               <button
                 key={item.label}
@@ -404,8 +409,28 @@ export default function AdminDashboard() {
             </div>
           )}
 
+          {/* ─── Labs Pages ─── */}
+          {activePage === "labs" && (
+            <LabsList
+              onAddLab={() => setActivePage("lab-registration")}
+            />
+          )}
+
+          {activePage === "lab-registration" && (
+            <div>
+              <button
+                onClick={() => setActivePage("labs")}
+                className="inline-flex items-center gap-1.5 text-sm text-[#1e3a5f] font-semibold mb-4 hover:underline"
+              >
+                <ChevronDown size={14} className="-rotate-90" />
+                Back to Labs
+              </button>
+              <LabRegistration onDone={() => setActivePage("labs")} />
+            </div>
+          )}
+
           {/* Placeholder for other pages */}
-          {!["dashboard", "doctors", "doctor-registration", "field-visibility", "medicines", "medicine-registration", "medicine-orders", "packages", "package-registration", "package-bookings"].includes(activePage) && (
+          {!["dashboard", "doctors", "doctor-registration", "field-visibility", "medicines", "medicine-registration", "medicine-orders", "packages", "package-registration", "package-bookings", "labs", "lab-registration"].includes(activePage) && (
             <PlaceholderPage title={getPageLabel()} />
           )}
         </main>
