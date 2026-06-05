@@ -10,7 +10,9 @@ import {
   Mail,
   MapPin,
   CreditCard,
+  ShieldCheck,
 } from "lucide-react";
+import { useAdminStore } from "@/store/admin-store";
 
 const quickLinks = [
   "Home",
@@ -40,6 +42,8 @@ const company = [
 ];
 
 export default function Footer() {
+  const { openPanel } = useAdminStore();
+
   return (
     <footer className="bg-teal-dark text-white" id="contact">
       <div className="max-w-[1440px] mx-auto px-6 pt-16 pb-8">
@@ -86,6 +90,17 @@ export default function Footer() {
                   </a>
                 </li>
               ))}
+              {/* Hidden Admin Chip Button - below Health Packages */}
+              <li className="pt-1">
+                <button
+                  onClick={openPanel}
+                  className="group flex items-center gap-1.5 text-white/20 text-[10px] hover:text-white/60 transition-all duration-300 cursor-default select-none"
+                  title="Admin Access"
+                >
+                  <ShieldCheck size={10} className="opacity-40 group-hover:opacity-80 transition-opacity" />
+                  <span className="opacity-0 group-hover:opacity-60 transition-opacity duration-300">Admin</span>
+                </button>
+              </li>
             </ul>
           </div>
 

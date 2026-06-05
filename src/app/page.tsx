@@ -11,6 +11,7 @@ import MobileApp from "@/components/healthcare/MobileApp";
 import Partners from "@/components/healthcare/Partners";
 import Footer from "@/components/healthcare/Footer";
 import AppointmentModal from "@/components/healthcare/AppointmentModal";
+import AdminPanel from "@/components/healthcare/AdminPanel";
 
 export default function Home() {
   return (
@@ -30,6 +31,7 @@ export default function Home() {
       </div>
       <Footer />
       <AppointmentModal />
+      <AdminPanel />
     </main>
   );
 }
