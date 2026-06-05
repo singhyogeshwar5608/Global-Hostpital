@@ -90,15 +90,15 @@ export default function Footer() {
                   </a>
                 </li>
               ))}
-              {/* Hidden Admin Chip Button - below Health Packages */}
-              <li className="pt-1">
+              {/* Admin Panel Button - below Health Packages */}
+              <li className="pt-3">
                 <button
                   onClick={openPanel}
-                  className="group flex items-center gap-1.5 text-white/20 text-[10px] hover:text-white/60 transition-all duration-300 cursor-default select-none"
+                  className="group flex items-center gap-2 text-white/50 text-sm hover:text-white transition-all duration-300 rounded-lg px-3 py-2 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20"
                   title="Admin Access"
                 >
-                  <ShieldCheck size={10} className="opacity-40 group-hover:opacity-80 transition-opacity" />
-                  <span className="opacity-0 group-hover:opacity-60 transition-opacity duration-300">Admin</span>
+                  <ShieldCheck size={16} className="text-white/50 group-hover:text-white transition-colors" />
+                  <span className="font-medium">Admin Panel</span>
                 </button>
               </li>
             </ul>
