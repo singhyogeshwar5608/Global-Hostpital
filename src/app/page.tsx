@@ -15,6 +15,7 @@ import AdminPanel from "@/components/healthcare/AdminPanel";
 import MedicineShop from "@/components/healthcare/MedicineShop";
 import PackageShop from "@/components/healthcare/PackageShop";
 import LabPanel from "@/components/healthcare/LabPanel";
+import PatientPortal from "@/components/healthcare/PatientPortal";
 
 export default function Home() {
   return (
@@ -38,6 +39,7 @@ export default function Home() {
       <MedicineShop />
       <PackageShop />
       <LabPanel />
+      <PatientPortal />
     </main>
   );
 }

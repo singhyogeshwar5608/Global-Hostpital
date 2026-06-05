@@ -60,6 +60,11 @@ import PackageRegistration from "./PackageRegistration";
 import PackageBookings from "./PackageBookings";
 import LabsList from "./LabsList";
 import LabRegistration from "./LabRegistration";
+import PatientsList from "./PatientsList";
+import PatientRegistration from "./PatientRegistration";
+import PatientReports from "./PatientReports";
+import PatientBookings from "./PatientBookings";
+import { usePatientStore } from "@/store/patient-store";
 
 // ─── Page type ───────────────────────────────────────────────
 type PageKey =
@@ -68,6 +73,9 @@ type PageKey =
   | "doctor-registration"
   | "field-visibility"
   | "patients"
+  | "patient-registration"
+  | "patient-reports"
+  | "patient-bookings"
   | "appointments"
   | "hospitals"
   | "labs"
@@ -161,6 +169,7 @@ export default function AdminDashboard() {
   const { logout, closePanel } = useAdminStore();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [activePage, setActivePage] = useState<PageKey>("dashboard");
+  const [selectedPatientId, setSelectedPatientId] = useState<string>("");
 
   const handleNavClick = (page: PageKey) => {
     setActivePage(page);
@@ -170,6 +179,9 @@ export default function AdminDashboard() {
     const item = sidebarItems.find((i) => i.page === activePage);
     if (activePage === "doctor-registration") return "Doctor Registration";
     if (activePage === "field-visibility") return "Field Visibility Settings";
+    if (activePage === "patient-registration") return "Patient Registration";
+    if (activePage === "patient-reports") return "Patient Reports";
+    if (activePage === "patient-bookings") return "Patient Bookings";
     if (activePage === "medicine-registration") return "Medicine Registration";
     if (activePage === "medicine-orders") return "Medicine Orders";
     if (activePage === "package-registration") return "Package Registration";
@@ -205,6 +217,9 @@ export default function AdminDashboard() {
             const isActive = activePage === item.page ||
               (item.page === "doctors" && activePage === "doctor-registration") ||
               (item.page === "doctors" && activePage === "field-visibility") ||
+              (item.page === "patients" && activePage === "patient-registration") ||
+              (item.page === "patients" && activePage === "patient-reports") ||
+              (item.page === "patients" && activePage === "patient-bookings") ||
               (item.page === "medicines" && activePage === "medicine-registration") ||
               (item.page === "medicines" && activePage === "medicine-orders") ||
               (item.page === "packages" && activePage === "package-registration") ||
@@ -305,6 +320,55 @@ export default function AdminDashboard() {
 
           {/* ─── Page Router ─── */}
           {activePage === "dashboard" && <DashboardPage />}
+
+          {/* ─── Patients Pages ─── */}
+          {activePage === "patients" && (
+            <PatientsList
+              onAddPatient={() => { setSelectedPatientId(""); setActivePage("patient-registration"); }}
+              onEditPatient={(id) => { setSelectedPatientId(id); setActivePage("patient-registration"); }}
+              onViewReports={(id) => { setSelectedPatientId(id); setActivePage("patient-reports"); }}
+              onViewBookings={() => setActivePage("patient-bookings")}
+            />
+          )}
+
+          {activePage === "patient-registration" && (
+            <div>
+              <button
+                onClick={() => setActivePage("patients")}
+                className="inline-flex items-center gap-1.5 text-sm text-[#1e3a5f] font-semibold mb-4 hover:underline"
+              >
+                <ChevronDown size={14} className="-rotate-90" />
+                Back to Patients
+              </button>
+              <PatientRegistration editId={selectedPatientId || null} onDone={() => { setSelectedPatientId(""); setActivePage("patients"); }} />
+            </div>
+          )}
+
+          {activePage === "patient-reports" && (
+            <div>
+              <button
+                onClick={() => setActivePage("patients")}
+                className="inline-flex items-center gap-1.5 text-sm text-[#1e3a5f] font-semibold mb-4 hover:underline"
+              >
+                <ChevronDown size={14} className="-rotate-90" />
+                Back to Patients
+              </button>
+              <PatientReports patientId={selectedPatientId || usePatientStore.getState().patients[0]?.id || ""} onBack={() => setActivePage("patients")} />
+            </div>
+          )}
+
+          {activePage === "patient-bookings" && (
+            <div>
+              <button
+                onClick={() => setActivePage("patients")}
+                className="inline-flex items-center gap-1.5 text-sm text-[#1e3a5f] font-semibold mb-4 hover:underline"
+              >
+                <ChevronDown size={14} className="-rotate-90" />
+                Back to Patients
+              </button>
+              <PatientBookings onBack={() => setActivePage("patients")} />
+            </div>
+          )}
 
           {activePage === "doctors" && (
             <DoctorsList
@@ -430,7 +494,7 @@ export default function AdminDashboard() {
           )}
 
           {/* Placeholder for other pages */}
-          {!["dashboard", "doctors", "doctor-registration", "field-visibility", "medicines", "medicine-registration", "medicine-orders", "packages", "package-registration", "package-bookings", "labs", "lab-registration"].includes(activePage) && (
+          {!["dashboard", "doctors", "doctor-registration", "field-visibility", "patients", "patient-registration", "patient-reports", "patient-bookings", "medicines", "medicine-registration", "medicine-orders", "packages", "package-registration", "package-bookings", "labs", "lab-registration"].includes(activePage) && (
             <PlaceholderPage title={getPageLabel()} />
           )}
         </main>

@@ -21,7 +21,8 @@ import { cn } from "@/lib/utils";
 import { useAppointmentStore } from "@/store/appointment-store";
 import { useMedicineStore } from "@/store/medicine-store";
 import { usePackageStore } from "@/store/package-store";
-import { Pill, Package } from "lucide-react";
+import { usePatientStore } from "@/store/patient-store";
+import { Pill, Package, Users } from "lucide-react";
 
 const navLinks = [
   { label: "Home", href: "#" },
@@ -38,6 +39,7 @@ export default function Header() {
   const { openModal } = useAppointmentStore();
   const { openShop, getCartItemCount } = useMedicineStore();
   const { openShop: openPackageShop } = usePackageStore();
+  const { openPortal: openPatientPortal } = usePatientStore();
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 40);
@@ -130,6 +132,13 @@ export default function Header() {
               <Package size={14} />
               Packages
             </button>
+            <button
+              onClick={openPatientPortal}
+              className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-teal hover:bg-mint rounded-lg transition-colors flex items-center gap-1.5"
+            >
+              <Users size={14} />
+              Patient Portal
+            </button>
           </div>
 
           {/* Right Actions */}
@@ -185,6 +194,12 @@ export default function Header() {
               className="block w-full text-left py-2.5 text-gray-700 hover:text-teal font-medium border-b border-gray-50 flex items-center gap-1.5"
             >
               <Package size={14} /> Packages
+            </button>
+            <button
+              onClick={() => { openPatientPortal(); setMobileOpen(false); }}
+              className="block w-full text-left py-2.5 text-gray-700 hover:text-teal font-medium border-b border-gray-50 flex items-center gap-1.5"
+            >
+              <Users size={14} /> Patient Portal
             </button>
             <Button
               onClick={() => { openModal(); setMobileOpen(false); }}
