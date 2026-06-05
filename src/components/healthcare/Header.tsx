@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useAppointmentStore } from "@/store/appointment-store";
 
 const navLinks = [
   { label: "Home", href: "#" },
@@ -33,6 +34,7 @@ const navLinks = [
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { openModal } = useAppointmentStore();
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 40);
@@ -122,7 +124,10 @@ export default function Header() {
               <ShoppingCart size={20} />
               <span className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-teal text-white text-[10px] font-bold flex items-center justify-center">2</span>
             </button>
-            <Button className="hidden md:flex gradient-teal text-white rounded-xl px-5 h-10 font-semibold shadow-premium hover:opacity-90 transition-opacity">
+            <Button
+              onClick={openModal}
+              className="hidden md:flex gradient-teal text-white rounded-xl px-5 h-10 font-semibold shadow-premium hover:opacity-90 transition-opacity"
+            >
               Book Appointment
             </Button>
             <button
@@ -147,7 +152,10 @@ export default function Header() {
                 {link.label}
               </a>
             ))}
-            <Button className="gradient-teal text-white rounded-xl px-5 h-10 font-semibold w-full mt-4">
+            <Button
+              onClick={() => { openModal(); setMobileOpen(false); }}
+              className="gradient-teal text-white rounded-xl px-5 h-10 font-semibold w-full mt-4"
+            >
               Book Appointment
             </Button>
           </div>

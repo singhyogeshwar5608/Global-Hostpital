@@ -3,6 +3,7 @@
 import React from "react";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useAppointmentStore } from "@/store/appointment-store";
 
 const cards = [
   {
@@ -11,6 +12,7 @@ const cards = [
     description:
       "Access a network of highly qualified and experienced doctors across 50+ specialties. Read verified patient reviews and choose the best healthcare provider for your needs.",
     btn: "Find Doctors",
+    isBooking: true,
   },
   {
     image: "/health-packages.png",
@@ -18,6 +20,7 @@ const cards = [
     description:
       "Comprehensive health checkup packages designed for all ages and lifestyles. Get preventive screenings and full-body diagnostics at affordable rates with home sample collection.",
     btn: "View Packages",
+    isBooking: false,
   },
   {
     image: "/order-medicines.png",
@@ -25,6 +28,7 @@ const cards = [
     description:
       "Order genuine prescription and OTC medicines online. Enjoy fast doorstep delivery, attractive discounts, and automatic refill reminders for your regular medications.",
     btn: "Order Now",
+    isBooking: false,
   },
   {
     image: "/partner-labs.png",
@@ -32,10 +36,13 @@ const cards = [
     description:
       "Get tested at 320+ NABL-accredited labs near you. Book lab tests online, enjoy home sample collection, and receive accurate digital reports within 24 hours.",
     btn: "Book Lab Test",
+    isBooking: true,
   },
 ];
 
 export default function FeatureCards() {
+  const { openModal } = useAppointmentStore();
+
   return (
     <section className="py-20 lg:py-28 bg-mint-light" id="features">
       <div className="max-w-[1440px] mx-auto px-6">
@@ -71,7 +78,10 @@ export default function FeatureCards() {
                 <p className="text-gray-500 text-sm leading-relaxed mb-5">
                   {card.description}
                 </p>
-                <Button className="gradient-teal text-white rounded-xl px-6 h-10 font-semibold hover:opacity-90 transition-opacity group/btn">
+                <Button
+                  onClick={card.isBooking ? openModal : undefined}
+                  className="gradient-teal text-white rounded-xl px-6 h-10 font-semibold hover:opacity-90 transition-opacity group/btn"
+                >
                   {card.btn}
                   <ArrowRight size={16} className="ml-1.5 group-hover/btn:translate-x-1 transition-transform" />
                 </Button>

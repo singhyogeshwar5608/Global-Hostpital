@@ -10,6 +10,7 @@ import {
   Package,
   ArrowRight,
 } from "lucide-react";
+import { useAppointmentStore } from "@/store/appointment-store";
 
 const services = [
   {
@@ -18,6 +19,7 @@ const services = [
     description: "Search from 248+ specialist doctors across various medical fields with verified reviews.",
     color: "bg-teal/10",
     iconColor: "text-teal",
+    action: "booking" as const,
   },
   {
     icon: CalendarPlus,
@@ -25,6 +27,7 @@ const services = [
     description: "Schedule in-person or online appointments instantly with your preferred healthcare provider.",
     color: "bg-blue-50",
     iconColor: "text-blue-500",
+    action: "booking" as const,
   },
   {
     icon: Video,
@@ -32,6 +35,7 @@ const services = [
     description: "Connect with certified doctors from the comfort of your home through secure video calls.",
     color: "bg-purple-50",
     iconColor: "text-purple-500",
+    action: "booking" as const,
   },
   {
     icon: FlaskConical,
@@ -39,6 +43,7 @@ const services = [
     description: "Book lab tests online and get accurate results from 320+ NABL-accredited partner labs.",
     color: "bg-orange-50",
     iconColor: "text-orange-500",
+    action: "link" as const,
   },
   {
     icon: Pill,
@@ -46,6 +51,7 @@ const services = [
     description: "Order genuine medicines online and get them delivered to your doorstep at the best prices.",
     color: "bg-emerald-50",
     iconColor: "text-emerald-500",
+    action: "link" as const,
   },
   {
     icon: Package,
@@ -53,10 +59,13 @@ const services = [
     description: "Choose from comprehensive health checkup packages tailored for every age and lifestyle.",
     color: "bg-rose-50",
     iconColor: "text-rose-500",
+    action: "link" as const,
   },
 ];
 
 export default function Services() {
+  const { openModal } = useAppointmentStore();
+
   return (
     <section className="py-20 lg:py-28 bg-white" id="services">
       <div className="max-w-[1440px] mx-auto px-6">
@@ -79,6 +88,7 @@ export default function Services() {
           {services.map((service) => (
             <div
               key={service.title}
+              onClick={service.action === "booking" ? openModal : undefined}
               className="group bg-white border border-gray-100 rounded-2xl p-7 shadow-card hover:shadow-card-hover transition-all duration-300 hover:-translate-y-1 cursor-pointer"
             >
               <div
@@ -92,12 +102,11 @@ export default function Services() {
               <p className="text-gray-500 text-sm leading-relaxed mb-4">
                 {service.description}
               </p>
-              <a
-                href="#"
+              <span
                 className="inline-flex items-center gap-1.5 text-teal font-semibold text-sm group-hover:gap-2.5 transition-all"
               >
-                Learn More <ArrowRight size={16} />
-              </a>
+                {service.action === "booking" ? "Book Now" : "Learn More"} <ArrowRight size={16} />
+              </span>
             </div>
           ))}
         </div>

@@ -10,6 +10,7 @@ import Blog from "@/components/healthcare/Blog";
 import MobileApp from "@/components/healthcare/MobileApp";
 import Partners from "@/components/healthcare/Partners";
 import Footer from "@/components/healthcare/Footer";
+import AppointmentModal from "@/components/healthcare/AppointmentModal";
 
 export default function Home() {
   return (
@@ -28,6 +29,7 @@ export default function Home() {
         <Partners />
       </div>
       <Footer />
+      <AppointmentModal />
     </main>
   );
 }
