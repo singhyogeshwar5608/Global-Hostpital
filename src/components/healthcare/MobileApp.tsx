@@ -11,11 +11,11 @@ import {
 } from "lucide-react";
 
 const appFeatures = [
-  { icon: CalendarCheck, label: "Book Appointments" },
-  { icon: Video, label: "Consult Online" },
-  { icon: Pill, label: "Order Medicines" },
-  { icon: FileText, label: "View Reports" },
-  { icon: HeartPulse, label: "Track Health" },
+  { icon: CalendarCheck, label: "Book Appointments", color: "#0d9488", bg: "#f0fdfa" },
+  { icon: Video, label: "Consult Online", color: "#7c3aed", bg: "#f5f3ff" },
+  { icon: Pill, label: "Order Medicines", color: "#ea580c", bg: "#fff7ed" },
+  { icon: FileText, label: "View Reports", color: "#2563eb", bg: "#eff6ff" },
+  { icon: HeartPulse, label: "Track Health", color: "#e11d48", bg: "#fff1f2" },
 ];
 
 export default function MobileApp() {
@@ -109,14 +109,20 @@ export default function MobileApp() {
               Download our mobile app for a better healthcare experience. Book appointments, consult doctors, order medicines, and view reports — anytime, anywhere.
             </p>
 
-            {/* Feature Icons - Circular */}
-            <div className="flex flex-wrap justify-center lg:justify-start gap-4 mb-8">
+            {/* Feature Icons - Circular with Colors */}
+            <div className="flex flex-wrap justify-center lg:justify-start gap-5 mb-8">
               {appFeatures.map((f) => (
                 <div key={f.label} className="flex flex-col items-center gap-1.5 group cursor-default">
-                  <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center group-hover:bg-teal/10 transition-colors">
-                    <f.icon size={20} className="text-gray-500 group-hover:text-teal transition-colors" />
+                  <div
+                    className="w-12 h-12 rounded-full flex items-center justify-center transition-transform group-hover:scale-110"
+                    style={{ backgroundColor: f.bg }}
+                  >
+                    <f.icon size={20} style={{ color: f.color }} />
                   </div>
-                  <span className="text-[10px] font-medium text-gray-500 group-hover:text-teal transition-colors text-center leading-tight max-w-[70px]">
+                  <span
+                    className="text-[10px] font-semibold text-center leading-tight max-w-[72px]"
+                    style={{ color: f.color }}
+                  >
                     {f.label}
                   </span>
                 </div>
@@ -125,23 +131,23 @@ export default function MobileApp() {
 
             {/* App Store Buttons */}
             <div className="flex flex-wrap justify-center lg:justify-start gap-3">
-              <button className="flex items-center gap-2.5 bg-white border border-gray-200 rounded-xl px-5 h-11 hover:bg-gray-50 hover:border-gray-300 transition-all shadow-sm">
-                <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 text-gray-800">
+              <button className="flex items-center gap-2.5 bg-black rounded-xl px-5 h-11 hover:bg-gray-800 transition-all shadow-sm">
+                <svg viewBox="0 0 24 24" fill="white" className="w-5 h-5">
                   <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z" />
                 </svg>
                 <div className="text-left">
-                  <div className="text-[8px] text-gray-400 leading-none">Download on the</div>
-                  <div className="text-xs font-semibold text-gray-800 leading-tight">App Store</div>
+                  <div className="text-[8px] text-gray-300 leading-none">Download on the</div>
+                  <div className="text-xs font-semibold text-white leading-tight">App Store</div>
                 </div>
               </button>
 
-              <button className="flex items-center gap-2.5 bg-white border border-gray-200 rounded-xl px-5 h-11 hover:bg-gray-50 hover:border-gray-300 transition-all shadow-sm">
-                <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 text-gray-800">
+              <button className="flex items-center gap-2.5 bg-black rounded-xl px-5 h-11 hover:bg-gray-800 transition-all shadow-sm">
+                <svg viewBox="0 0 24 24" fill="white" className="w-5 h-5">
                   <path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 0 1-.61-.92V2.734a1 1 0 0 1 .609-.92zm10.89 9.479l2.71-2.712 5.156 2.98a1.003 1.003 0 0 1 0 1.738l-5.156 2.98-2.71-2.712zm-1.414 1.414L2.908 22.882l10.177-5.877 2.71-2.71-2.71-2.688zM2.908 1.118l10.177 5.877-2.71 2.688-10.177-5.22z" />
                 </svg>
                 <div className="text-left">
-                  <div className="text-[8px] text-gray-400 leading-none">Get it on</div>
-                  <div className="text-xs font-semibold text-gray-800 leading-tight">Google Play</div>
+                  <div className="text-[8px] text-gray-300 leading-none">Get it on</div>
+                  <div className="text-xs font-semibold text-white leading-tight">Google Play</div>
                 </div>
               </button>
             </div>
