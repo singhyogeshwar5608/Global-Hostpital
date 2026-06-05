@@ -120,11 +120,11 @@ export default function Footer() {
               <li>
                 <button
                   onClick={openDoctorPanel}
-                  className="group flex items-center gap-2 text-white/50 text-sm hover:text-teal-light transition-all duration-300 rounded-lg px-3 py-2 bg-gradient-to-r from-teal/20 to-emerald-500/20 hover:from-teal/30 hover:to-emerald-500/30 border border-teal/30 hover:border-teal/50 shadow-sm hover:shadow-teal/10"
+                  className="group flex items-center gap-2 text-sm transition-all duration-300 rounded-lg px-3.5 py-2.5 bg-gradient-to-r from-teal to-emerald-500 hover:from-teal-light hover:to-emerald-400 text-white font-semibold shadow-md hover:shadow-lg hover:scale-[1.03]"
                   title="Doctor Portal"
                 >
-                  <Stethoscope size={16} className="text-teal-light/70 group-hover:text-teal-light transition-colors" />
-                  <span className="font-medium">Doctor Portal</span>
+                  <Stethoscope size={16} className="transition-transform group-hover:rotate-12" />
+                  <span>Doctor Portal</span>
                 </button>
               </li>
             </ul>
