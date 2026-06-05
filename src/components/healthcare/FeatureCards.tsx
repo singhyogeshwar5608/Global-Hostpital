@@ -1,53 +1,45 @@
 "use client";
 
 import React, { useRef, useState, useEffect } from "react";
-import { ArrowRight, ChevronLeft, ChevronRight, Stethoscope, Package, Pill, FlaskConical } from "lucide-react";
+import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { useAppointmentStore } from "@/store/appointment-store";
 
 const cards = [
   {
-    icon: Stethoscope,
+    image: "/top-doctors.png",
     title: "Top Doctors",
     description: "Expert doctors across 50+ specialties.",
     btn: "Find Doctors",
-    color: "bg-teal/10",
-    iconColor: "text-teal",
     borderColor: "hover:border-teal/25",
     ctaBg: "bg-teal/10 group-hover:bg-teal",
     ctaColor: "text-teal group-hover:text-white",
     isBooking: true,
   },
   {
-    icon: Package,
+    image: "/health-packages.png",
     title: "Health Packages",
     description: "Full-body checkups at affordable rates.",
     btn: "View Packages",
-    color: "bg-rose-50",
-    iconColor: "text-rose-500",
     borderColor: "hover:border-rose-300/30",
     ctaBg: "bg-rose-50 group-hover:bg-rose-500",
     ctaColor: "text-rose-500 group-hover:text-white",
     isBooking: false,
   },
   {
-    icon: Pill,
+    image: "/order-medicines.png",
     title: "Order Medicines",
     description: "Fast delivery with best discounts.",
     btn: "Order Now",
-    color: "bg-emerald-50",
-    iconColor: "text-emerald-500",
     borderColor: "hover:border-emerald-300/30",
     ctaBg: "bg-emerald-50 group-hover:bg-emerald-500",
     ctaColor: "text-emerald-500 group-hover:text-white",
     isBooking: false,
   },
   {
-    icon: FlaskConical,
+    image: "/partner-labs.png",
     title: "Partner Labs",
     description: "320+ NABL-accredited labs near you.",
     btn: "Book Lab Test",
-    color: "bg-orange-50",
-    iconColor: "text-orange-500",
     borderColor: "hover:border-orange-300/30",
     ctaBg: "bg-orange-50 group-hover:bg-orange-500",
     ctaColor: "text-orange-500 group-hover:text-white",
@@ -84,7 +76,7 @@ export default function FeatureCards() {
   const scroll = (dir: "left" | "right") => {
     const el = scrollRef.current;
     if (!el) return;
-    const cardWidth = el.querySelector<HTMLDivElement>("[data-card]")?.offsetWidth || 240;
+    const cardWidth = el.querySelector<HTMLDivElement>("[data-card]")?.offsetWidth || 260;
     el.scrollBy({ left: dir === "left" ? -cardWidth : cardWidth, behavior: "smooth" });
   };
 
@@ -130,39 +122,41 @@ export default function FeatureCards() {
             className="flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-1 lg:overflow-visible"
             style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
           >
-            {cards.map((card) => {
-              const Icon = card.icon;
-              return (
-                <div
-                  key={card.title}
-                  data-card
-                  onClick={card.isBooking ? openModal : undefined}
-                  className={`
-                    group flex-shrink-0 w-[220px] sm:w-[240px] lg:w-auto lg:flex-1
-                    bg-white border border-gray-100 ${card.borderColor}
-                    rounded-2xl p-6 pt-7 pb-5
-                    shadow-[0_1px_2px_rgba(0,0,0,0.04),0_2px_8px_rgba(0,0,0,0.02)]
-                    hover:shadow-[0_8px_25px_rgba(0,0,0,0.07),0_2px_6px_rgba(0,0,0,0.03)]
-                    hover:-translate-y-1.5
-                    transition-all duration-300 ease-out
-                    cursor-pointer snap-start
-                    flex flex-col items-center text-center
-                  `}
-                >
-                  {/* Icon */}
-                  <div
-                    className={`w-12 h-12 rounded-xl ${card.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}
-                  >
-                    <Icon size={22} className={card.iconColor} />
-                  </div>
+            {cards.map((card) => (
+              <div
+                key={card.title}
+                data-card
+                onClick={card.isBooking ? openModal : undefined}
+                className={`
+                  group flex-shrink-0 w-[240px] sm:w-[260px] lg:w-auto lg:flex-1
+                  bg-white border border-gray-100 ${card.borderColor}
+                  rounded-2xl overflow-hidden
+                  shadow-[0_1px_2px_rgba(0,0,0,0.04),0_2px_8px_rgba(0,0,0,0.02)]
+                  hover:shadow-[0_8px_25px_rgba(0,0,0,0.07),0_2px_6px_rgba(0,0,0,0.03)]
+                  hover:-translate-y-1.5
+                  transition-all duration-300 ease-out
+                  cursor-pointer snap-start
+                  flex flex-col
+                `}
+              >
+                {/* Image */}
+                <div className="h-32 overflow-hidden">
+                  <img
+                    src={card.image}
+                    alt={card.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                </div>
 
+                {/* Content */}
+                <div className="p-5 pt-4 flex flex-col items-center text-center flex-1">
                   {/* Title */}
-                  <h3 className="text-sm font-bold text-gray-900 mb-1.5 leading-tight">
+                  <h3 className="text-sm font-bold text-gray-900 mb-1 leading-tight">
                     {card.title}
                   </h3>
 
                   {/* Short Description */}
-                  <p className="text-gray-400 text-xs leading-relaxed mb-4 flex-1">
+                  <p className="text-gray-400 text-xs leading-relaxed mb-3 flex-1">
                     {card.description}
                   </p>
 
@@ -174,8 +168,8 @@ export default function FeatureCards() {
                     <ArrowRight size={12} />
                   </span>
                 </div>
-              );
-            })}
+              </div>
+            ))}
           </div>
 
           {/* Mobile dots */}
