@@ -18,61 +18,67 @@ const services = [
   {
     icon: UserSearch,
     title: "Find Doctors",
-    description: "Search from 248+ specialist doctors across various medical fields with verified reviews.",
+    description: "Search verified doctors.",
     color: "bg-teal/10",
     iconColor: "text-teal",
-    gradient: "from-teal/5 to-teal/0",
-    borderColor: "hover:border-teal/30",
+    borderColor: "hover:border-teal/25",
+    ctaBg: "bg-teal/10 group-hover:bg-teal",
+    ctaColor: "text-teal group-hover:text-white",
     action: "booking" as const,
   },
   {
     icon: CalendarPlus,
     title: "Book Appointment",
-    description: "Schedule in-person or online appointments instantly with your preferred healthcare provider.",
+    description: "Book appointments online.",
     color: "bg-blue-50",
     iconColor: "text-blue-500",
-    gradient: "from-blue-500/5 to-blue-500/0",
-    borderColor: "hover:border-blue-300/40",
+    borderColor: "hover:border-blue-300/30",
+    ctaBg: "bg-blue-50 group-hover:bg-blue-500",
+    ctaColor: "text-blue-500 group-hover:text-white",
     action: "booking" as const,
   },
   {
     icon: Video,
     title: "Video Consultation",
-    description: "Connect with certified doctors from the comfort of your home through secure video calls.",
+    description: "Consult doctors via video.",
     color: "bg-purple-50",
     iconColor: "text-purple-500",
-    gradient: "from-purple-500/5 to-purple-500/0",
-    borderColor: "hover:border-purple-300/40",
+    borderColor: "hover:border-purple-300/30",
+    ctaBg: "bg-purple-50 group-hover:bg-purple-500",
+    ctaColor: "text-purple-500 group-hover:text-white",
     action: "booking" as const,
   },
   {
     icon: FlaskConical,
     title: "Lab Tests",
-    description: "Book lab tests online and get accurate results from 320+ NABL-accredited partner labs.",
+    description: "Book tests and view reports.",
     color: "bg-orange-50",
     iconColor: "text-orange-500",
-    gradient: "from-orange-500/5 to-orange-500/0",
-    borderColor: "hover:border-orange-300/40",
+    borderColor: "hover:border-orange-300/30",
+    ctaBg: "bg-orange-50 group-hover:bg-orange-500",
+    ctaColor: "text-orange-500 group-hover:text-white",
     action: "link" as const,
   },
   {
     icon: Pill,
     title: "Medicines",
-    description: "Order genuine medicines online and get them delivered to your doorstep at the best prices.",
+    description: "Order medicines online.",
     color: "bg-emerald-50",
     iconColor: "text-emerald-500",
-    gradient: "from-emerald-500/5 to-emerald-500/0",
-    borderColor: "hover:border-emerald-300/40",
+    borderColor: "hover:border-emerald-300/30",
+    ctaBg: "bg-emerald-50 group-hover:bg-emerald-500",
+    ctaColor: "text-emerald-500 group-hover:text-white",
     action: "link" as const,
   },
   {
     icon: Package,
     title: "Health Packages",
-    description: "Choose from comprehensive health checkup packages tailored for every age and lifestyle.",
+    description: "Explore health packages.",
     color: "bg-rose-50",
     iconColor: "text-rose-500",
-    gradient: "from-rose-500/5 to-rose-500/0",
-    borderColor: "hover:border-rose-300/40",
+    borderColor: "hover:border-rose-300/30",
+    ctaBg: "bg-rose-50 group-hover:bg-rose-500",
+    ctaColor: "text-rose-500 group-hover:text-white",
     action: "link" as const,
   },
 ];
@@ -106,7 +112,7 @@ export default function Services() {
   const scroll = (dir: "left" | "right") => {
     const el = scrollRef.current;
     if (!el) return;
-    const cardWidth = el.querySelector<HTMLDivElement>("[data-card]")?.offsetWidth || 280;
+    const cardWidth = el.querySelector<HTMLDivElement>("[data-card]")?.offsetWidth || 220;
     el.scrollBy({ left: dir === "left" ? -cardWidth : cardWidth, behavior: "smooth" });
   };
 
@@ -114,43 +120,43 @@ export default function Services() {
     <section className="py-20 lg:py-28 bg-white" id="services">
       <div className="max-w-[1440px] mx-auto px-6">
         {/* Section Header */}
-        <div className="text-center max-w-2xl mx-auto mb-14">
+        <div className="text-center max-w-2xl mx-auto mb-12">
           <span className="inline-block text-teal font-semibold text-sm mb-3 tracking-wider uppercase">
             Our Services
           </span>
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
             Healthcare Solutions for Everyone
           </h2>
-          <p className="text-gray-500 text-lg">
+          <p className="text-gray-500 text-base">
             From finding the right doctor to ordering medicines, we provide
             end-to-end healthcare services tailored to your needs.
           </p>
         </div>
 
-        {/* Desktop: Single row 6 cards | Tablet/Mobile: Horizontal scroll */}
+        {/* Cards Container */}
         <div className="relative">
-          {/* Scroll Arrows — visible on tablet/mobile only */}
+          {/* Scroll Arrows — tablet/mobile */}
           {canScrollLeft && (
             <button
               onClick={() => scroll("left")}
-              className="absolute left-0 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-white shadow-lg border border-gray-100 flex items-center justify-center text-gray-500 hover:text-teal hover:shadow-xl transition-all lg:hidden -ml-2"
+              className="absolute left-0 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white shadow-lg border border-gray-100 flex items-center justify-center text-gray-400 hover:text-teal hover:shadow-xl transition-all lg:hidden -ml-1"
             >
-              <ChevronLeft size={20} />
+              <ChevronLeft size={18} />
             </button>
           )}
           {canScrollRight && (
             <button
               onClick={() => scroll("right")}
-              className="absolute right-0 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-white shadow-lg border border-gray-100 flex items-center justify-center text-gray-500 hover:text-teal hover:shadow-xl transition-all lg:hidden -mr-2"
+              className="absolute right-0 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white shadow-lg border border-gray-100 flex items-center justify-center text-gray-400 hover:text-teal hover:shadow-xl transition-all lg:hidden -mr-1"
             >
-              <ChevronRight size={20} />
+              <ChevronRight size={18} />
             </button>
           )}
 
-          {/* Cards Container */}
+          {/* Cards Row */}
           <div
             ref={scrollRef}
-            className="flex gap-5 overflow-x-auto scroll-smooth snap-x snap-mandatory scrollbar-hide pb-2 lg:overflow-visible lg:snap-none"
+            className="flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-1 lg:overflow-visible"
             style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
           >
             {services.map((service) => (
@@ -159,60 +165,54 @@ export default function Services() {
                 data-card
                 onClick={service.action === "booking" ? openModal : undefined}
                 className={`
-                  group relative flex-shrink-0 w-[260px] sm:w-[280px] lg:w-auto lg:flex-1
-                  bg-white/80 backdrop-blur-sm
-                  border border-gray-100 ${service.borderColor}
-                  rounded-3xl p-7
-                  shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.03)]
-                  hover:shadow-[0_8px_30px_rgba(0,0,0,0.08),0_2px_6px_rgba(0,0,0,0.04)]
-                  hover:-translate-y-2
+                  group flex-shrink-0 w-[200px] sm:w-[220px] lg:w-auto lg:flex-1
+                  bg-white border border-gray-100 ${service.borderColor}
+                  rounded-2xl p-6 pt-7 pb-5
+                  shadow-[0_1px_2px_rgba(0,0,0,0.04),0_2px_8px_rgba(0,0,0,0.02)]
+                  hover:shadow-[0_8px_25px_rgba(0,0,0,0.07),0_2px_6px_rgba(0,0,0,0.03)]
+                  hover:-translate-y-1.5
                   transition-all duration-300 ease-out
                   cursor-pointer snap-start
-                  lg:snap-align-none
+                  flex flex-col items-center text-center
                 `}
               >
-                {/* Gradient bg on hover */}
-                <div className={`absolute inset-0 rounded-3xl bg-gradient-to-b ${service.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none`} />
-
-                <div className="relative z-10 flex flex-col h-full">
-                  {/* Icon */}
-                  <div
-                    className={`w-14 h-14 rounded-2xl ${service.color} flex items-center justify-center mb-5 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300`}
-                  >
-                    <service.icon size={26} className={service.iconColor} />
-                  </div>
-
-                  {/* Title */}
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">
-                    {service.title}
-                  </h3>
-
-                  {/* Description */}
-                  <p className="text-gray-500 text-sm leading-relaxed mb-5 flex-1">
-                    {service.description}
-                  </p>
-
-                  {/* CTA */}
-                  <span
-                    className="inline-flex items-center gap-1.5 text-teal font-semibold text-sm group-hover:gap-2.5 transition-all"
-                  >
-                    {service.action === "booking" ? "Book Now" : "Learn More"} <ArrowRight size={16} />
-                  </span>
+                {/* Icon — centered */}
+                <div
+                  className={`w-12 h-12 rounded-xl ${service.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}
+                >
+                  <service.icon size={22} className={service.iconColor} />
                 </div>
+
+                {/* Title */}
+                <h3 className="text-sm font-bold text-gray-900 mb-1.5 leading-tight">
+                  {service.title}
+                </h3>
+
+                {/* Short Description */}
+                <p className="text-gray-400 text-xs leading-relaxed mb-4 flex-1">
+                  {service.description}
+                </p>
+
+                {/* CTA Button */}
+                <span
+                  className={`inline-flex items-center gap-1 ${service.ctaBg} ${service.ctaColor} text-xs font-semibold px-3.5 py-1.5 rounded-lg transition-all duration-300`}
+                >
+                  {service.action === "booking" ? "Book Now" : "Learn More"}
+                  <ArrowRight size={12} />
+                </span>
               </div>
             ))}
           </div>
 
-          {/* Mobile scroll indicator dots */}
-          <div className="flex justify-center gap-1.5 mt-5 lg:hidden">
+          {/* Mobile dots */}
+          <div className="flex justify-center gap-1.5 mt-4 lg:hidden">
             {services.map((_, i) => (
-              <div key={i} className="w-1.5 h-1.5 rounded-full bg-gray-300" />
+              <div key={i} className="w-1.5 h-1.5 rounded-full bg-gray-200" />
             ))}
           </div>
         </div>
       </div>
 
-      {/* Hide scrollbar utility */}
       <style jsx>{`
         .scrollbar-hide::-webkit-scrollbar {
           display: none;
