@@ -66,6 +66,8 @@ import PatientReports from "./PatientReports";
 import PatientBookings from "./PatientBookings";
 import AppointmentsList from "./AppointmentsList";
 import AppointmentSlotManager from "./AppointmentSlotManager";
+import HospitalsList from "./HospitalsList";
+import HospitalRegistration from "./HospitalRegistration";
 import { usePatientStore } from "@/store/patient-store";
 
 // ─── Page type ───────────────────────────────────────────────
@@ -81,6 +83,7 @@ type PageKey =
   | "appointments"
   | "appointment-slots"
   | "hospitals"
+  | "hospital-registration"
   | "labs"
   | "medicines"
   | "medicine-registration"
@@ -173,6 +176,7 @@ export default function AdminDashboard() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [activePage, setActivePage] = useState<PageKey>("dashboard");
   const [selectedPatientId, setSelectedPatientId] = useState<string>("");
+  const [selectedHospitalId, setSelectedHospitalId] = useState<string>("");
 
   const handleNavClick = (page: PageKey) => {
     setActivePage(page);
@@ -191,6 +195,7 @@ export default function AdminDashboard() {
     if (activePage === "package-bookings") return "Package Bookings";
     if (activePage === "lab-registration") return "Lab Registration";
     if (activePage === "appointment-slots") return "Doctor Slot Management";
+    if (activePage === "hospital-registration") return "Hospital Registration";
     return item?.label || "Dashboard";
   };
 
@@ -229,7 +234,8 @@ export default function AdminDashboard() {
               (item.page === "packages" && activePage === "package-registration") ||
               (item.page === "packages" && activePage === "package-bookings") ||
               (item.page === "labs" && activePage === "lab-registration") ||
-              (item.page === "appointments" && activePage === "appointment-slots");
+              (item.page === "appointments" && activePage === "appointment-slots") ||
+              (item.page === "hospitals" && activePage === "hospital-registration");
             return (
               <button
                 key={item.label}
@@ -395,6 +401,27 @@ export default function AdminDashboard() {
             </div>
           )}
 
+          {/* ─── Hospitals Pages ─── */}
+          {activePage === "hospitals" && (
+            <HospitalsList
+              onAddHospital={() => setActivePage("hospital-registration")}
+              onEditHospital={(id) => { setSelectedHospitalId(id); setActivePage("hospital-registration"); }}
+            />
+          )}
+
+          {activePage === "hospital-registration" && (
+            <div>
+              <button
+                onClick={() => setActivePage("hospitals")}
+                className="inline-flex items-center gap-1.5 text-sm text-[#1e3a5f] font-semibold mb-4 hover:underline"
+              >
+                <ChevronDown size={14} className="-rotate-90" />
+                Back to Hospitals
+              </button>
+              <HospitalRegistration editId={selectedHospitalId || null} onDone={() => { setSelectedHospitalId(""); setActivePage("hospitals"); }} />
+            </div>
+          )}
+
           {activePage === "doctors" && (
             <DoctorsList
               onAddDoctor={() => setActivePage("doctor-registration")}
@@ -519,7 +546,7 @@ export default function AdminDashboard() {
           )}
 
           {/* Placeholder for other pages */}
-          {!["dashboard", "doctors", "doctor-registration", "field-visibility", "patients", "patient-registration", "patient-reports", "patient-bookings", "appointments", "appointment-slots", "medicines", "medicine-registration", "medicine-orders", "packages", "package-registration", "package-bookings", "labs", "lab-registration"].includes(activePage) && (
+          {!["dashboard", "doctors", "doctor-registration", "field-visibility", "patients", "patient-registration", "patient-reports", "patient-bookings", "appointments", "appointment-slots", "hospitals", "hospital-registration", "medicines", "medicine-registration", "medicine-orders", "packages", "package-registration", "package-bookings", "labs", "lab-registration"].includes(activePage) && (
             <PlaceholderPage title={getPageLabel()} />
           )}
         </main>
