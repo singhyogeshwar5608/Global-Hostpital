@@ -91,7 +91,7 @@ export default function Partners() {
                 className="flex-shrink-0 w-36 h-16 rounded-xl border border-gray-200 bg-white flex items-center justify-center hover:border-teal/20 hover:shadow-md transition-all cursor-pointer group"
               >
                 <span
-                  className="text-sm font-bold tracking-wide opacity-30 group-hover:opacity-70 transition-opacity"
+                  className="text-sm font-bold tracking-wide group-hover:brightness-110 transition-all"
                   style={{ color: partner.color }}
                 >
                   {partner.name}
