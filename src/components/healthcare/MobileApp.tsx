@@ -6,125 +6,144 @@ import {
   Video,
   Pill,
   FileText,
+  HeartPulse,
   Smartphone,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 
 const appFeatures = [
-  { icon: CalendarCheck, label: "Book Appointment" },
+  { icon: CalendarCheck, label: "Book Appointments" },
   { icon: Video, label: "Consult Online" },
   { icon: Pill, label: "Order Medicines" },
   { icon: FileText, label: "View Reports" },
+  { icon: HeartPulse, label: "Track Health" },
 ];
 
 export default function MobileApp() {
   return (
-    <section className="py-20 lg:py-28 bg-white">
-      <div className="max-w-[1440px] mx-auto px-6">
-        <div className="gradient-dark-green rounded-3xl overflow-hidden">
-          <div className="flex flex-col lg:flex-row items-center gap-10 p-10 md:p-16">
-            {/* Phone Mockup */}
-            <div className="flex-shrink-0 relative">
-              <div className="w-56 h-[420px] bg-gray-900 rounded-[2.5rem] p-2 shadow-2xl relative">
-                <div className="w-full h-full rounded-[2rem] bg-gradient-to-br from-teal to-teal-light overflow-hidden relative">
-                  {/* Status bar */}
-                  <div className="flex items-center justify-between px-5 pt-3 text-white/80 text-[10px]">
-                    <span>9:41</span>
-                    <div className="flex gap-1">
-                      <span className="w-3 h-1.5 bg-white/60 rounded-sm" />
-                      <span className="w-3 h-1.5 bg-white/60 rounded-sm" />
-                      <span className="w-4 h-1.5 bg-white/80 rounded-sm" />
+    <section className="py-16 lg:py-24 bg-white">
+      <div className="max-w-[1200px] mx-auto px-6">
+        <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
+          {/* Left - Phone Mockup */}
+          <div className="flex-shrink-0 relative">
+            {/* Subtle background circle */}
+            <div className="absolute -inset-8 bg-gray-50 rounded-full -z-10" />
+
+            <div className="w-56 h-[400px] bg-gray-900 rounded-[2.5rem] p-2.5 shadow-2xl relative">
+              <div className="w-full h-full rounded-[2rem] bg-white overflow-hidden relative">
+                {/* App Header - Green */}
+                <div className="bg-gradient-to-r from-teal to-teal-light px-4 pt-4 pb-3">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex gap-1.5">
+                      <div className="w-4 h-0.5 bg-white/60 rounded-full" />
+                      <div className="w-4 h-0.5 bg-white/60 rounded-full" />
+                      <div className="w-4 h-0.5 bg-white/60 rounded-full" />
                     </div>
+                    <div className="w-5 h-5 rounded-full bg-white/20" />
                   </div>
-                  {/* App content */}
-                  <div className="px-4 pt-6">
-                    <div className="text-white text-sm font-bold mb-1">Good Morning!</div>
-                    <div className="text-white/70 text-[10px] mb-4">How can we help you today?</div>
-                    <div className="grid grid-cols-2 gap-2">
-                      {appFeatures.slice(0, 4).map((f) => (
-                        <div
-                          key={f.label}
-                          className="bg-white/15 backdrop-blur-sm rounded-xl p-3 text-center"
-                        >
-                          <f.icon size={20} className="text-white mx-auto mb-1" />
-                          <div className="text-white text-[9px] font-medium">{f.label}</div>
+                  <div className="text-white font-bold text-sm">Dashboard</div>
+                  <div className="text-white/70 text-[10px]">Good Morning!</div>
+                </div>
+
+                {/* App Content */}
+                <div className="px-3 pt-3">
+                  <div className="grid grid-cols-2 gap-2">
+                    {appFeatures.slice(0, 4).map((f) => (
+                      <div
+                        key={f.label}
+                        className="bg-teal/5 border border-teal/10 rounded-xl p-2.5 text-center"
+                      >
+                        <div className="w-8 h-8 rounded-lg bg-teal/10 flex items-center justify-center mx-auto mb-1">
+                          <f.icon size={16} className="text-teal" />
                         </div>
-                      ))}
-                    </div>
-                    <div className="mt-3 bg-white rounded-xl p-3">
-                      <div className="text-[10px] text-gray-500 mb-1">Upcoming</div>
-                      <div className="flex items-center gap-2">
-                        <div className="w-7 h-7 rounded-full bg-teal/20 flex items-center justify-center">
-                          <CalendarCheck size={12} className="text-teal" />
-                        </div>
-                        <div>
-                          <div className="text-[10px] font-semibold text-gray-900">Dr. Sarah</div>
-                          <div className="text-[8px] text-gray-500">10:00 AM Today</div>
-                        </div>
+                        <div className="text-gray-700 text-[8px] font-medium leading-tight">{f.label}</div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Upcoming Appointment */}
+                  <div className="mt-2.5 bg-gray-50 border border-gray-100 rounded-xl p-2.5">
+                    <div className="text-[8px] text-gray-400 mb-1.5 font-medium uppercase tracking-wider">Upcoming</div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-7 h-7 rounded-full bg-teal/10 flex items-center justify-center">
+                        <CalendarCheck size={12} className="text-teal" />
+                      </div>
+                      <div>
+                        <div className="text-[9px] font-semibold text-gray-800">Dr. Sarah Wilson</div>
+                        <div className="text-[7px] text-gray-400">10:00 AM Today</div>
                       </div>
                     </div>
                   </div>
-                  {/* Home bar */}
-                  <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-24 h-1 bg-white/40 rounded-full" />
                 </div>
-              </div>
-              {/* Floating notification card */}
-              <div className="absolute -right-6 top-16 glass rounded-xl p-3 shadow-premium w-44">
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-lg bg-teal/20 flex items-center justify-center">
-                    <CalendarCheck size={14} className="text-teal" />
-                  </div>
-                  <div>
-                    <div className="text-[10px] font-semibold text-gray-900">Appointment</div>
-                    <div className="text-[8px] text-gray-500">Confirmed!</div>
-                  </div>
-                </div>
+
+                {/* Home indicator */}
+                <div className="absolute bottom-1.5 left-1/2 -translate-x-1/2 w-20 h-1 bg-gray-200 rounded-full" />
               </div>
             </div>
 
-            {/* Text Content */}
-            <div className="flex-1 space-y-6 text-center lg:text-left">
-              <div className="inline-flex items-center gap-2 bg-white/15 rounded-full px-4 py-1.5 text-white text-sm font-medium">
-                <Smartphone size={14} />
-                Mobile App
+            {/* Floating notification */}
+            <div className="absolute -right-4 top-14 bg-white rounded-xl p-2.5 shadow-lg border border-gray-100 w-36">
+              <div className="flex items-center gap-2">
+                <div className="w-7 h-7 rounded-lg bg-green-50 flex items-center justify-center">
+                  <CalendarCheck size={13} className="text-green-500" />
+                </div>
+                <div>
+                  <div className="text-[9px] font-semibold text-gray-800">Appointment</div>
+                  <div className="text-[7px] text-green-500 font-medium">Confirmed!</div>
+                </div>
               </div>
-              <h2 className="text-3xl md:text-4xl font-bold text-white leading-tight">
-                Healthcare at Your Fingertips
-              </h2>
-              <p className="text-white/80 text-lg leading-relaxed max-w-lg">
-                Download our app and access all healthcare services from your
-                smartphone. Book appointments, consult doctors, order medicines,
-                and view reports — anytime, anywhere.
-              </p>
+            </div>
+          </div>
 
-              {/* Feature Icons */}
-              <div className="flex flex-wrap justify-center lg:justify-start gap-4">
-                {appFeatures.map((f) => (
-                  <div
-                    key={f.label}
-                    className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-xl px-4 py-2.5"
-                  >
-                    <f.icon size={16} className="text-white" />
-                    <span className="text-white text-sm font-medium">{f.label}</span>
+          {/* Right - Content */}
+          <div className="flex-1 text-center lg:text-left">
+            <div className="inline-flex items-center gap-2 bg-teal/5 rounded-full px-4 py-1.5 text-teal text-sm font-semibold mb-4">
+              <Smartphone size={14} />
+              Mobile App
+            </div>
+
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 leading-tight mb-3">
+              Healthcare at Your Fingertips
+            </h2>
+
+            <p className="text-gray-500 text-base leading-relaxed max-w-md mb-8">
+              Download our mobile app for a better healthcare experience. Book appointments, consult doctors, order medicines, and view reports — anytime, anywhere.
+            </p>
+
+            {/* Feature Icons - Circular */}
+            <div className="flex flex-wrap justify-center lg:justify-start gap-4 mb-8">
+              {appFeatures.map((f) => (
+                <div key={f.label} className="flex flex-col items-center gap-1.5 group cursor-default">
+                  <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center group-hover:bg-teal/10 transition-colors">
+                    <f.icon size={20} className="text-gray-500 group-hover:text-teal transition-colors" />
                   </div>
-                ))}
-              </div>
+                  <span className="text-[10px] font-medium text-gray-500 group-hover:text-teal transition-colors text-center leading-tight max-w-[70px]">
+                    {f.label}
+                  </span>
+                </div>
+              ))}
+            </div>
 
-              {/* App Store Buttons */}
-              <div className="flex flex-wrap justify-center lg:justify-start gap-3 pt-2">
-                <Button className="bg-white text-teal-dark rounded-xl px-6 h-11 font-semibold hover:bg-white/90">
-                  <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 mr-2">
-                    <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z" />
-                  </svg>
-                  App Store
-                </Button>
-                <Button className="bg-white text-teal-dark rounded-xl px-6 h-11 font-semibold hover:bg-white/90">
-                  <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 mr-2">
-                    <path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 0 1-.61-.92V2.734a1 1 0 0 1 .609-.92zm10.89 9.479l2.71-2.712 5.156 2.98a1.003 1.003 0 0 1 0 1.738l-5.156 2.98-2.71-2.712zm-1.414 1.414L2.908 22.882l10.177-5.877 2.71-2.71-2.71-2.688zM2.908 1.118l10.177 5.877-2.71 2.688-10.177-5.22z" />
-                  </svg>
-                  Google Play
-                </Button>
-              </div>
+            {/* App Store Buttons */}
+            <div className="flex flex-wrap justify-center lg:justify-start gap-3">
+              <button className="flex items-center gap-2.5 bg-white border border-gray-200 rounded-xl px-5 h-11 hover:bg-gray-50 hover:border-gray-300 transition-all shadow-sm">
+                <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 text-gray-800">
+                  <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z" />
+                </svg>
+                <div className="text-left">
+                  <div className="text-[8px] text-gray-400 leading-none">Download on the</div>
+                  <div className="text-xs font-semibold text-gray-800 leading-tight">App Store</div>
+                </div>
+              </button>
+
+              <button className="flex items-center gap-2.5 bg-white border border-gray-200 rounded-xl px-5 h-11 hover:bg-gray-50 hover:border-gray-300 transition-all shadow-sm">
+                <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 text-gray-800">
+                  <path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 0 1-.61-.92V2.734a1 1 0 0 1 .609-.92zm10.89 9.479l2.71-2.712 5.156 2.98a1.003 1.003 0 0 1 0 1.738l-5.156 2.98-2.71-2.712zm-1.414 1.414L2.908 22.882l10.177-5.877 2.71-2.71-2.71-2.688zM2.908 1.118l10.177 5.877-2.71 2.688-10.177-5.22z" />
+                </svg>
+                <div className="text-left">
+                  <div className="text-[8px] text-gray-400 leading-none">Get it on</div>
+                  <div className="text-xs font-semibold text-gray-800 leading-tight">Google Play</div>
+                </div>
+              </button>
             </div>
           </div>
         </div>
