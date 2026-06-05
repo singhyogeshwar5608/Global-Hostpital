@@ -52,6 +52,9 @@ import {
 import DoctorRegistration from "./DoctorRegistration";
 import DoctorsList from "./DoctorsList";
 import FieldVisibilitySettings from "./FieldVisibilitySettings";
+import MedicinesList from "./MedicinesList";
+import MedicineRegistration from "./MedicineRegistration";
+import MedicineOrders from "./MedicineOrders";
 
 // ─── Page type ───────────────────────────────────────────────
 type PageKey =
@@ -64,6 +67,8 @@ type PageKey =
   | "hospitals"
   | "labs"
   | "medicines"
+  | "medicine-registration"
+  | "medicine-orders"
   | "packages"
   | "prescriptions"
   | "lab-reports"
@@ -157,6 +162,8 @@ export default function AdminDashboard() {
     const item = sidebarItems.find((i) => i.page === activePage);
     if (activePage === "doctor-registration") return "Doctor Registration";
     if (activePage === "field-visibility") return "Field Visibility Settings";
+    if (activePage === "medicine-registration") return "Medicine Registration";
+    if (activePage === "medicine-orders") return "Medicine Orders";
     return item?.label || "Dashboard";
   };
 
@@ -186,7 +193,9 @@ export default function AdminDashboard() {
           {sidebarItems.map((item) => {
             const isActive = activePage === item.page ||
               (item.page === "doctors" && activePage === "doctor-registration") ||
-              (item.page === "doctors" && activePage === "field-visibility");
+              (item.page === "doctors" && activePage === "field-visibility") ||
+              (item.page === "medicines" && activePage === "medicine-registration") ||
+              (item.page === "medicines" && activePage === "medicine-orders");
             return (
               <button
                 key={item.label}
@@ -316,8 +325,43 @@ export default function AdminDashboard() {
             </div>
           )}
 
+          {/* ─── Medicines Pages ─── */}
+          {activePage === "medicines" && (
+            <MedicinesList
+              onAddMedicine={() => setActivePage("medicine-registration")}
+              onEditMedicine={(id) => setActivePage("medicine-registration")}
+              onViewOrders={() => setActivePage("medicine-orders")}
+            />
+          )}
+
+          {activePage === "medicine-registration" && (
+            <div>
+              <button
+                onClick={() => setActivePage("medicines")}
+                className="inline-flex items-center gap-1.5 text-sm text-[#1e3a5f] font-semibold mb-4 hover:underline"
+              >
+                <ChevronDown size={14} className="-rotate-90" />
+                Back to Medicines
+              </button>
+              <MedicineRegistration onDone={() => setActivePage("medicines")} />
+            </div>
+          )}
+
+          {activePage === "medicine-orders" && (
+            <div>
+              <button
+                onClick={() => setActivePage("medicines")}
+                className="inline-flex items-center gap-1.5 text-sm text-[#1e3a5f] font-semibold mb-4 hover:underline"
+              >
+                <ChevronDown size={14} className="-rotate-90" />
+                Back to Medicines
+              </button>
+              <MedicineOrders onBack={() => setActivePage("medicines")} />
+            </div>
+          )}
+
           {/* Placeholder for other pages */}
-          {!["dashboard", "doctors", "doctor-registration", "field-visibility"].includes(activePage) && (
+          {!["dashboard", "doctors", "doctor-registration", "field-visibility", "medicines", "medicine-registration", "medicine-orders"].includes(activePage) && (
             <PlaceholderPage title={getPageLabel()} />
           )}
         </main>

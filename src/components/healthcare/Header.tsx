@@ -19,13 +19,14 @@ import {
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useAppointmentStore } from "@/store/appointment-store";
+import { useMedicineStore } from "@/store/medicine-store";
+import { Pill } from "lucide-react";
 
 const navLinks = [
   { label: "Home", href: "#" },
   { label: "Find Doctors", href: "#services" },
   { label: "Services", href: "#services" },
   { label: "Packages", href: "#features" },
-  { label: "Medicines", href: "#features" },
   { label: "Labs", href: "#features" },
   { label: "About Us", href: "#why-us" },
   { label: "Contact Us", href: "#contact" },
@@ -35,6 +36,7 @@ export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const { openModal } = useAppointmentStore();
+  const { openShop, getCartItemCount, isShopOpen } = useMedicineStore();
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 40);
@@ -113,6 +115,13 @@ export default function Header() {
                 {link.label}
               </a>
             ))}
+            <button
+              onClick={openShop}
+              className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-teal hover:bg-mint rounded-lg transition-colors flex items-center gap-1.5"
+            >
+              <Pill size={14} />
+              Medicines
+            </button>
           </div>
 
           {/* Right Actions */}
@@ -120,9 +129,14 @@ export default function Header() {
             <button className="w-10 h-10 rounded-xl flex items-center justify-center text-gray-500 hover:text-teal hover:bg-mint transition-colors">
               <Search size={20} />
             </button>
-            <button className="w-10 h-10 rounded-xl flex items-center justify-center text-gray-500 hover:text-teal hover:bg-mint transition-colors relative">
+            <button
+              onClick={openShop}
+              className="w-10 h-10 rounded-xl flex items-center justify-center text-gray-500 hover:text-teal hover:bg-mint transition-colors relative"
+            >
               <ShoppingCart size={20} />
-              <span className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-teal text-white text-[10px] font-bold flex items-center justify-center">2</span>
+              {getCartItemCount() > 0 && (
+                <span className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-teal text-white text-[10px] font-bold flex items-center justify-center">{getCartItemCount()}</span>
+              )}
             </button>
             <Button
               onClick={openModal}
@@ -152,6 +166,12 @@ export default function Header() {
                 {link.label}
               </a>
             ))}
+            <button
+              onClick={() => { openShop(); setMobileOpen(false); }}
+              className="block w-full text-left py-2.5 text-gray-700 hover:text-teal font-medium border-b border-gray-50 flex items-center gap-1.5"
+            >
+              <Pill size={14} /> Medicines
+            </button>
             <Button
               onClick={() => { openModal(); setMobileOpen(false); }}
               className="gradient-teal text-white rounded-xl px-5 h-10 font-semibold w-full mt-4"

@@ -12,6 +12,7 @@ import Partners from "@/components/healthcare/Partners";
 import Footer from "@/components/healthcare/Footer";
 import AppointmentModal from "@/components/healthcare/AppointmentModal";
 import AdminPanel from "@/components/healthcare/AdminPanel";
+import MedicineShop from "@/components/healthcare/MedicineShop";
 
 export default function Home() {
   return (
@@ -32,6 +33,7 @@ export default function Home() {
       <Footer />
       <AppointmentModal />
       <AdminPanel />
+      <MedicineShop />
     </main>
   );
 }
