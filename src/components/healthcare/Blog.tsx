@@ -32,15 +32,15 @@ const blogs = [
 
 export default function Blog() {
   return (
-    <section className="py-14 lg:py-20 bg-white">
-      <div className="max-w-[1200px] mx-auto px-6">
+    <section className="py-10 sm:py-14 lg:py-20 bg-white">
+      <div className="max-w-[1200px] mx-auto px-4 sm:px-6">
         {/* Section Header */}
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center justify-between mb-6 sm:mb-8">
           <div>
-            <span className="inline-block text-teal font-semibold text-[11px] tracking-widest uppercase">
+            <span className="inline-block text-teal font-semibold text-[10px] sm:text-[11px] tracking-widest uppercase">
               Our Blog
             </span>
-            <h2 className="text-2xl font-bold text-gray-900 mt-1">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mt-1">
               Health Tips &amp; News
             </h2>
           </div>
@@ -52,15 +52,15 @@ export default function Blog() {
           </a>
         </div>
 
-        {/* Blog Cards - 3 in a row */}
-        <div className="grid md:grid-cols-3 gap-5">
+        {/* Blog Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-5">
           {blogs.map((blog) => (
             <article
               key={blog.title}
-              className="group bg-white rounded-2xl overflow-hidden border border-gray-100 hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
+              className="group bg-white rounded-xl sm:rounded-2xl overflow-hidden border border-gray-100 hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
             >
               {/* Image */}
-              <div className="h-44 overflow-hidden relative">
+              <div className="h-36 sm:h-44 overflow-hidden relative">
                 <img
                   src={blog.image}
                   alt={blog.title}
@@ -69,33 +69,35 @@ export default function Blog() {
               </div>
 
               {/* Content */}
-              <div className="p-5">
+              <div className="p-4 sm:p-5">
                 {/* Category Badge */}
-                <span className="inline-flex items-center gap-1 bg-gray-100 text-gray-500 text-[10px] font-semibold px-2.5 py-1 rounded-md uppercase tracking-wider mb-3">
-                  <Tag size={10} />
+                <span className="inline-flex items-center gap-1 bg-gray-100 text-gray-500 text-[9px] sm:text-[10px] font-semibold px-2 sm:px-2.5 py-1 rounded-md uppercase tracking-wider mb-2 sm:mb-3">
+                  <Tag size={9} className="sm:hidden" />
+                  <Tag size={10} className="hidden sm:block" />
                   {blog.category}
                 </span>
 
                 {/* Title */}
-                <h3 className="text-[15px] font-bold text-gray-900 mb-2 leading-snug group-hover:text-teal transition-colors line-clamp-2">
+                <h3 className="text-sm sm:text-[15px] font-bold text-gray-900 mb-1.5 sm:mb-2 leading-snug group-hover:text-teal transition-colors line-clamp-2">
                   {blog.title}
                 </h3>
 
                 {/* Date */}
-                <div className="flex items-center gap-1.5 text-gray-400 text-xs mb-3">
-                  <Calendar size={12} />
+                <div className="flex items-center gap-1.5 text-gray-400 text-[10px] sm:text-xs mb-2 sm:mb-3">
+                  <Calendar size={11} className="sm:hidden" />
+                  <Calendar size={12} className="hidden sm:block" />
                   {blog.date}
                 </div>
 
                 {/* Excerpt */}
-                <p className="text-gray-500 text-sm leading-relaxed mb-4 line-clamp-2">
+                <p className="text-gray-500 text-xs sm:text-sm leading-relaxed mb-3 sm:mb-4 line-clamp-2">
                   {blog.excerpt}
                 </p>
 
                 {/* Read More Button */}
-                <button className="inline-flex items-center gap-1.5 bg-teal text-white text-sm font-semibold px-4 py-2 rounded-lg hover:bg-teal-dark transition-colors group-hover:gap-2.5 transition-all">
+                <button className="inline-flex items-center gap-1.5 bg-teal text-white text-xs sm:text-sm font-semibold px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg hover:bg-teal-dark transition-colors">
                   Read More
-                  <ArrowRight size={14} />
+                  <ArrowRight size={12} />
                 </button>
               </div>
             </article>
@@ -103,7 +105,7 @@ export default function Blog() {
         </div>
 
         {/* Mobile View All */}
-        <div className="text-center mt-6 sm:hidden">
+        <div className="text-center mt-5 sm:hidden">
           <a
             href="#"
             className="inline-flex items-center gap-1.5 text-teal font-semibold text-sm"

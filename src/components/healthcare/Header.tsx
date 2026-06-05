@@ -47,10 +47,16 @@ export default function Header() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    document.body.style.overflow = mobileOpen ? "hidden" : "";
+    return () => { document.body.style.overflow = ""; };
+  }, [mobileOpen]);
+
   return (
     <header className="w-full z-50">
       {/* Top Bar */}
-      <div className="bg-teal-dark text-white text-sm hidden lg:block">
+      <div className="bg-teal-dark text-white text-xs sm:text-sm hidden lg:block">
         <div className="max-w-[1440px] mx-auto px-6 flex items-center justify-between h-10">
           <div className="flex items-center gap-6">
             <span className="flex items-center gap-1.5">
@@ -91,19 +97,19 @@ export default function Header() {
         className={cn(
           "w-full transition-all duration-300 bg-white",
           isScrolled
-            ? "fixed top-0 left-0 shadow-md py-2"
-            : "relative shadow-sm py-3"
+            ? "fixed top-0 left-0 shadow-md py-1.5 sm:py-2"
+            : "relative shadow-sm py-2 sm:py-3"
         )}
       >
-        <div className="max-w-[1440px] mx-auto px-6 flex items-center justify-between">
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 flex items-center justify-between">
           {/* Logo */}
-          <a href="#" className="flex items-center gap-2 shrink-0">
-            <div className="w-10 h-10 rounded-xl gradient-teal flex items-center justify-center">
-              <span className="text-white font-bold text-lg">G</span>
+          <a href="#" className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl gradient-teal flex items-center justify-center">
+              <span className="text-white font-bold text-base sm:text-lg">G</span>
             </div>
             <div className="leading-tight">
-              <span className="text-teal-dark font-bold text-lg block leading-tight">Global Integrative</span>
-              <span className="text-teal text-xs font-medium tracking-wider uppercase">Clinic</span>
+              <span className="text-teal-dark font-bold text-sm sm:text-lg block leading-tight">Global Integrative</span>
+              <span className="text-teal text-[10px] sm:text-xs font-medium tracking-wider uppercase">Clinic</span>
             </div>
           </a>
 
@@ -142,42 +148,45 @@ export default function Header() {
           </div>
 
           {/* Right Actions */}
-          <div className="flex items-center gap-3">
-            <button className="w-10 h-10 rounded-xl flex items-center justify-center text-gray-500 hover:text-teal hover:bg-mint transition-colors">
-              <Search size={20} />
+          <div className="flex items-center gap-2 sm:gap-3">
+            <button className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl flex items-center justify-center text-gray-500 hover:text-teal hover:bg-mint transition-colors">
+              <Search size={18} className="sm:hidden" />
+              <Search size={20} className="hidden sm:block" />
             </button>
             <button
               onClick={openShop}
-              className="w-10 h-10 rounded-xl flex items-center justify-center text-gray-500 hover:text-teal hover:bg-mint transition-colors relative"
+              className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl flex items-center justify-center text-gray-500 hover:text-teal hover:bg-mint transition-colors relative"
             >
-              <ShoppingCart size={20} />
+              <ShoppingCart size={18} className="sm:hidden" />
+              <ShoppingCart size={20} className="hidden sm:block" />
               {getCartItemCount() > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-teal text-white text-[10px] font-bold flex items-center justify-center">{getCartItemCount()}</span>
+                <span className="absolute -top-0.5 -right-0.5 w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full bg-teal text-white text-[8px] sm:text-[10px] font-bold flex items-center justify-center">{getCartItemCount()}</span>
               )}
             </button>
             <Button
               onClick={openModal}
-              className="hidden md:flex gradient-teal text-white rounded-xl px-5 h-10 font-semibold shadow-premium hover:opacity-90 transition-opacity"
+              className="hidden md:flex gradient-teal text-white rounded-xl px-5 h-9 sm:h-10 font-semibold text-sm shadow-premium hover:opacity-90 transition-opacity"
             >
               Book Appointment
             </Button>
             <button
-              className="xl:hidden w-10 h-10 rounded-xl flex items-center justify-center text-gray-500 hover:text-teal hover:bg-mint transition-colors"
+              className="xl:hidden w-9 h-9 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl flex items-center justify-center text-gray-500 hover:text-teal hover:bg-mint transition-colors"
               onClick={() => setMobileOpen(!mobileOpen)}
             >
-              {mobileOpen ? <X size={22} /> : <Menu size={22} />}
+              {mobileOpen ? <X size={20} className="sm:hidden" /> : <Menu size={20} className="sm:hidden" />}
+              {mobileOpen ? <X size={22} className="hidden sm:block" /> : <Menu size={22} className="hidden sm:block" />}
             </button>
           </div>
         </div>
 
         {/* Mobile Menu */}
         {mobileOpen && (
-          <div className="xl:hidden bg-white border-t mt-2 px-6 py-4 shadow-lg">
+          <div className="xl:hidden bg-white border-t px-4 sm:px-6 py-4 shadow-lg fixed inset-x-0 top-[52px] sm:top-[60px] bottom-0 overflow-y-auto z-50">
             {navLinks.map((link) => (
               <a
                 key={link.label}
                 href={link.href}
-                className="block py-2.5 text-gray-700 hover:text-teal font-medium border-b border-gray-50 last:border-0"
+                className="block py-2.5 text-gray-700 hover:text-teal font-medium text-sm border-b border-gray-50 last:border-0"
                 onClick={() => setMobileOpen(false)}
               >
                 {link.label}
@@ -185,25 +194,25 @@ export default function Header() {
             ))}
             <button
               onClick={() => { openShop(); setMobileOpen(false); }}
-              className="block w-full text-left py-2.5 text-gray-700 hover:text-teal font-medium border-b border-gray-50 flex items-center gap-1.5"
+              className="block w-full text-left py-2.5 text-gray-700 hover:text-teal font-medium text-sm border-b border-gray-50 flex items-center gap-1.5"
             >
               <Pill size={14} /> Medicines
             </button>
             <button
               onClick={() => { openPackageShop(); setMobileOpen(false); }}
-              className="block w-full text-left py-2.5 text-gray-700 hover:text-teal font-medium border-b border-gray-50 flex items-center gap-1.5"
+              className="block w-full text-left py-2.5 text-gray-700 hover:text-teal font-medium text-sm border-b border-gray-50 flex items-center gap-1.5"
             >
               <Package size={14} /> Packages
             </button>
             <button
               onClick={() => { openPatientPortal(); setMobileOpen(false); }}
-              className="block w-full text-left py-2.5 text-gray-700 hover:text-teal font-medium border-b border-gray-50 flex items-center gap-1.5"
+              className="block w-full text-left py-2.5 text-gray-700 hover:text-teal font-medium text-sm border-b border-gray-50 flex items-center gap-1.5"
             >
               <Users size={14} /> Patient Portal
             </button>
             <Button
               onClick={() => { openModal(); setMobileOpen(false); }}
-              className="gradient-teal text-white rounded-xl px-5 h-10 font-semibold w-full mt-4"
+              className="gradient-teal text-white rounded-xl px-5 h-10 font-semibold w-full mt-4 text-sm"
             >
               Book Appointment
             </Button>

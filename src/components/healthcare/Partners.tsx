@@ -40,19 +40,19 @@ export default function Partners() {
   const scroll = (dir: "left" | "right") => {
     const el = scrollRef.current;
     if (!el) return;
-    const cardWidth = 180;
+    const cardWidth = 160;
     el.scrollBy({ left: dir === "left" ? -cardWidth : cardWidth, behavior: "smooth" });
   };
 
   return (
-    <section className="py-10 lg:py-12 bg-gray-50">
-      <div className="max-w-[1200px] mx-auto px-6">
+    <section className="py-8 sm:py-10 lg:py-12 bg-gray-50">
+      <div className="max-w-[1200px] mx-auto px-4 sm:px-6">
         {/* Header - Left Aligned */}
-        <div className="mb-6">
-          <span className="inline-block text-teal font-semibold text-[11px] tracking-widest uppercase">
+        <div className="mb-4 sm:mb-6">
+          <span className="inline-block text-teal font-semibold text-[10px] sm:text-[11px] tracking-widest uppercase">
             Trusted Partners
           </span>
-          <h2 className="text-xl font-bold text-gray-900 mt-1">
+          <h2 className="text-lg sm:text-xl font-bold text-gray-900 mt-1">
             Our Partners
           </h2>
         </div>
@@ -62,25 +62,25 @@ export default function Partners() {
           {/* Left Arrow */}
           <button
             onClick={() => scroll("left")}
-            className="flex-shrink-0 w-9 h-9 rounded-full bg-white border border-gray-200 flex items-center justify-center text-gray-500 hover:text-teal hover:border-teal/30 hover:shadow-md transition-all mr-3"
+            className="flex-shrink-0 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white border border-gray-200 flex items-center justify-center text-gray-500 hover:text-teal hover:border-teal/30 hover:shadow-md transition-all mr-2 sm:mr-3"
             style={{ display: canScrollLeft ? "flex" : "none" }}
           >
-            <ChevronLeft size={18} />
+            <ChevronLeft size={16} />
           </button>
 
           {/* Logos Scrollable Row */}
           <div
             ref={scrollRef}
-            className="flex gap-5 overflow-x-auto scroll-smooth flex-1"
+            className="flex gap-3 sm:gap-5 overflow-x-auto scroll-smooth flex-1"
             style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
           >
             {partners.map((partner, i) => (
               <div
                 key={`${partner.name}-${i}`}
-                className="flex-shrink-0 w-44 h-20 bg-white flex items-center justify-center cursor-pointer"
+                className="flex-shrink-0 w-32 sm:w-44 h-16 sm:h-20 bg-white flex items-center justify-center cursor-pointer"
               >
                 <span
-                  className="text-sm font-medium tracking-wide text-center leading-tight"
+                  className="text-xs sm:text-sm font-medium tracking-wide text-center leading-tight"
                   style={{ color: partner.color }}
                 >
                   {partner.name}
@@ -92,10 +92,10 @@ export default function Partners() {
           {/* Right Arrow */}
           <button
             onClick={() => scroll("right")}
-            className="flex-shrink-0 w-9 h-9 rounded-full bg-white border border-gray-200 flex items-center justify-center text-gray-500 hover:text-teal hover:border-teal/30 hover:shadow-md transition-all ml-3"
+            className="flex-shrink-0 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white border border-gray-200 flex items-center justify-center text-gray-500 hover:text-teal hover:border-teal/30 hover:shadow-md transition-all ml-2 sm:ml-3"
             style={{ display: canScrollRight ? "flex" : "none" }}
           >
-            <ChevronRight size={18} />
+            <ChevronRight size={16} />
           </button>
         </div>
       </div>

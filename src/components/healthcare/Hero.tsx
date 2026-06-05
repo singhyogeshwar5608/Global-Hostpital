@@ -22,34 +22,35 @@ export default function Hero() {
 
   return (
     <section className="relative overflow-hidden bg-gradient-to-br from-white via-mint-light to-mint">
-      <div className="max-w-[1440px] mx-auto px-6 pt-12 pb-20 lg:pt-16 lg:pb-28">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 pt-8 pb-14 sm:pt-12 sm:pb-20 lg:pt-16 lg:pb-28">
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
           {/* Left Side */}
-          <div className="space-y-7">
-            <span className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm border border-teal/20 rounded-full px-4 py-1.5 text-teal font-semibold text-sm shadow-sm">
+          <div className="space-y-5 sm:space-y-7">
+            <span className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm border border-teal/20 rounded-full px-3 sm:px-4 py-1.5 text-teal font-semibold text-xs sm:text-sm shadow-sm">
               <span className="w-2 h-2 rounded-full bg-teal animate-pulse" />
               Your Health, Our Priority
             </span>
 
-            <h1 className="text-4xl md:text-5xl lg:text-[3.5rem] font-bold leading-tight text-gray-900">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[3.5rem] font-bold leading-tight text-gray-900">
               Comprehensive Care for a{" "}
               <span className="text-gradient-teal">Better Life</span>
             </h1>
 
-            <p className="text-gray-600 text-lg leading-relaxed max-w-lg">
+            <p className="text-gray-600 text-sm sm:text-base lg:text-lg leading-relaxed max-w-lg">
               Consult top doctors, book appointments, order medicines, take lab
               tests and manage your health from one platform.
             </p>
 
             {/* Feature Icons */}
-            <div className="flex flex-wrap gap-5">
+            <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-3 sm:gap-5">
               {features.map((f) => (
                 <div
                   key={f.label}
-                  className="flex items-center gap-2 text-sm text-gray-600"
+                  className="flex items-center gap-2 text-xs sm:text-sm text-gray-600"
                 >
-                  <div className="w-9 h-9 rounded-xl bg-teal/10 flex items-center justify-center">
-                    <f.icon size={18} className="text-teal" />
+                  <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-teal/10 flex items-center justify-center">
+                    <f.icon size={16} className="text-teal sm:hidden" />
+                    <f.icon size={18} className="text-teal hidden sm:block" />
                   </div>
                   <span className="font-medium">{f.label}</span>
                 </div>
@@ -57,24 +58,24 @@ export default function Hero() {
             </div>
 
             {/* Buttons */}
-            <div className="flex flex-wrap gap-4 pt-2">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-2">
               <Button
                 onClick={openModal}
-                className="gradient-teal text-white rounded-2xl px-8 h-12 text-base font-semibold shadow-premium hover:opacity-90 transition-all"
+                className="gradient-teal text-white rounded-xl sm:rounded-2xl px-6 sm:px-8 h-11 sm:h-12 text-sm sm:text-base font-semibold shadow-premium hover:opacity-90 transition-all w-full sm:w-auto"
               >
                 Book Appointment
               </Button>
               <Button
                 onClick={openModal}
                 variant="outline"
-                className="rounded-2xl px-8 h-12 text-base font-semibold border-teal/30 text-teal hover:bg-teal/5"
+                className="rounded-xl sm:rounded-2xl px-6 sm:px-8 h-11 sm:h-12 text-sm sm:text-base font-semibold border-teal/30 text-teal hover:bg-teal/5 w-full sm:w-auto"
               >
                 Consult Online
               </Button>
             </div>
           </div>
 
-          {/* Right Side */}
+          {/* Right Side - Hidden on mobile, visible on lg */}
           <div className="relative hidden lg:block">
             <div className="relative rounded-3xl overflow-hidden shadow-premium">
               <img
@@ -85,7 +86,7 @@ export default function Hero() {
               <div className="absolute inset-0 bg-gradient-to-t from-teal-dark/20 to-transparent" />
             </div>
 
-            {/* Floating Appointment Card - Now clickable */}
+            {/* Floating Appointment Card */}
             <div
               className="absolute -left-8 bottom-12 glass rounded-2xl p-5 shadow-premium w-[300px] cursor-pointer hover:shadow-card-hover transition-all group"
               onClick={openModal}

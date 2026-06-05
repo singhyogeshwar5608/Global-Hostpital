@@ -117,17 +117,17 @@ export default function Services() {
   };
 
   return (
-    <section className="py-20 lg:py-28 bg-white" id="services">
-      <div className="max-w-[1440px] mx-auto px-6">
+    <section className="py-10 sm:py-16 lg:py-20 bg-white" id="services">
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-6">
         {/* Section Header */}
-        <div className="text-center max-w-2xl mx-auto mb-12">
-          <span className="inline-block text-teal font-semibold text-sm mb-3 tracking-wider uppercase">
+        <div className="text-center max-w-2xl mx-auto mb-8 sm:mb-12">
+          <span className="inline-block text-teal font-semibold text-[11px] sm:text-sm mb-2 sm:mb-3 tracking-wider uppercase">
             Our Services
           </span>
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-3 sm:mb-4">
             Healthcare Solutions for Everyone
           </h2>
-          <p className="text-gray-500 text-base">
+          <p className="text-gray-500 text-sm sm:text-base">
             From finding the right doctor to ordering medicines, we provide
             end-to-end healthcare services tailored to your needs.
           </p>
@@ -139,24 +139,24 @@ export default function Services() {
           {canScrollLeft && (
             <button
               onClick={() => scroll("left")}
-              className="absolute left-0 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white shadow-lg border border-gray-100 flex items-center justify-center text-gray-400 hover:text-teal hover:shadow-xl transition-all lg:hidden -ml-1"
+              className="absolute left-0 top-1/2 -translate-y-1/2 z-20 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white shadow-lg border border-gray-100 flex items-center justify-center text-gray-400 hover:text-teal hover:shadow-xl transition-all lg:hidden -ml-1"
             >
-              <ChevronLeft size={18} />
+              <ChevronLeft size={16} />
             </button>
           )}
           {canScrollRight && (
             <button
               onClick={() => scroll("right")}
-              className="absolute right-0 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white shadow-lg border border-gray-100 flex items-center justify-center text-gray-400 hover:text-teal hover:shadow-xl transition-all lg:hidden -mr-1"
+              className="absolute right-0 top-1/2 -translate-y-1/2 z-20 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white shadow-lg border border-gray-100 flex items-center justify-center text-gray-400 hover:text-teal hover:shadow-xl transition-all lg:hidden -mr-1"
             >
-              <ChevronRight size={18} />
+              <ChevronRight size={16} />
             </button>
           )}
 
           {/* Cards Row */}
           <div
             ref={scrollRef}
-            className="flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-1 lg:overflow-visible"
+            className="flex gap-3 sm:gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-1 lg:overflow-visible lg:flex-wrap"
             style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
           >
             {services.map((service) => (
@@ -165,9 +165,9 @@ export default function Services() {
                 data-card
                 onClick={service.action === "booking" ? openModal : undefined}
                 className={`
-                  group flex-shrink-0 w-[200px] sm:w-[220px] lg:w-auto lg:flex-1
+                  group flex-shrink-0 w-[160px] sm:w-[200px] lg:w-auto lg:flex-1
                   bg-white border border-gray-100 ${service.borderColor}
-                  rounded-2xl p-6 pt-7 pb-5
+                  rounded-xl sm:rounded-2xl p-4 sm:p-6 pt-5 sm:pt-7 pb-4 sm:pb-5
                   shadow-[0_1px_2px_rgba(0,0,0,0.04),0_2px_8px_rgba(0,0,0,0.02)]
                   hover:shadow-[0_8px_25px_rgba(0,0,0,0.07),0_2px_6px_rgba(0,0,0,0.03)]
                   hover:-translate-y-1.5
@@ -178,27 +178,29 @@ export default function Services() {
               >
                 {/* Icon — centered */}
                 <div
-                  className={`w-12 h-12 rounded-xl ${service.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}
+                  className={`w-10 h-10 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl ${service.color} flex items-center justify-center mb-3 sm:mb-4 group-hover:scale-110 transition-transform duration-300`}
                 >
-                  <service.icon size={22} className={service.iconColor} />
+                  <service.icon size={18} className={`${service.iconColor} sm:hidden`} />
+                  <service.icon size={22} className={`${service.iconColor} hidden sm:block`} />
                 </div>
 
                 {/* Title */}
-                <h3 className="text-sm font-bold text-gray-900 mb-1.5 leading-tight">
+                <h3 className="text-xs sm:text-sm font-bold text-gray-900 mb-1 sm:mb-1.5 leading-tight">
                   {service.title}
                 </h3>
 
                 {/* Short Description */}
-                <p className="text-gray-400 text-xs leading-relaxed mb-4 flex-1">
+                <p className="text-gray-400 text-[10px] sm:text-xs leading-relaxed mb-3 sm:mb-4 flex-1">
                   {service.description}
                 </p>
 
                 {/* CTA Button */}
                 <span
-                  className={`inline-flex items-center gap-1 ${service.ctaBg} ${service.ctaColor} text-xs font-semibold px-3.5 py-1.5 rounded-lg transition-all duration-300`}
+                  className={`inline-flex items-center gap-1 ${service.ctaBg} ${service.ctaColor} text-[10px] sm:text-xs font-semibold px-3 py-1.5 sm:px-3.5 rounded-lg transition-all duration-300`}
                 >
                   {service.action === "booking" ? "Book Now" : "Learn More"}
-                  <ArrowRight size={12} />
+                  <ArrowRight size={10} className="sm:hidden" />
+                  <ArrowRight size={12} className="hidden sm:block" />
                 </span>
               </div>
             ))}

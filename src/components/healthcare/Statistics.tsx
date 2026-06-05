@@ -14,7 +14,7 @@ const stats = [
   { icon: Stethoscope, value: 248, suffix: "+", label: "Expert Doctors", color: "#c4b5fd", iconBg: "rgba(255,255,255,0.15)" },
   { icon: FlaskConical, value: 320, suffix: "+", label: "Partner Labs", color: "#fdba74", iconBg: "rgba(255,255,255,0.15)" },
   { icon: CalendarCheck, value: 15000, suffix: "+", label: "Appointments", color: "#93c5fd", iconBg: "rgba(255,255,255,0.15)" },
-  { icon: ThumbsUp, value: 98, suffix: "%", label: "Patient Satisfaction", color: "#fda4af", iconBg: "rgba(255,255,255,0.15)" },
+  { icon: ThumbsUp, value: 98, suffix: "%", label: "Satisfaction", color: "#fda4af", iconBg: "rgba(255,255,255,0.15)" },
 ];
 
 function AnimatedCounter({ target, suffix, color }: { target: number; suffix: string; color: string }) {
@@ -47,7 +47,7 @@ function AnimatedCounter({ target, suffix, color }: { target: number; suffix: st
   }, [target]);
 
   return (
-    <div className="text-2xl md:text-3xl font-extrabold" style={{ color }}>
+    <div className="text-xl sm:text-2xl md:text-3xl font-extrabold" style={{ color }}>
       {count.toLocaleString()}
       {suffix}
     </div>
@@ -56,24 +56,25 @@ function AnimatedCounter({ target, suffix, color }: { target: number; suffix: st
 
 export default function Statistics() {
   return (
-    <section className="py-10 lg:py-12 bg-gradient-to-r from-[#065a50] via-[#0a7a6a] to-[#065a50]">
-      <div className="max-w-[1200px] mx-auto px-6">
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+    <section className="py-6 sm:py-8 lg:py-10 bg-gradient-to-r from-[#065a50] via-[#0a7a6a] to-[#065a50]">
+      <div className="max-w-[1200px] mx-auto px-4 sm:px-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
           {stats.map((stat) => {
             const Icon = stat.icon;
             return (
               <div
                 key={stat.label}
-                className="rounded-2xl p-5 text-center bg-white/10 backdrop-blur-sm hover:-translate-y-1 hover:bg-white/15 hover:shadow-lg transition-all duration-300 cursor-default"
+                className="rounded-xl sm:rounded-2xl p-3 sm:p-5 text-center bg-white/10 backdrop-blur-sm hover:-translate-y-1 hover:bg-white/15 hover:shadow-lg transition-all duration-300 cursor-default"
               >
                 <div
-                  className="w-11 h-11 rounded-xl flex items-center justify-center mx-auto mb-3"
+                  className="w-8 h-8 sm:w-11 sm:h-11 rounded-lg sm:rounded-xl flex items-center justify-center mx-auto mb-2 sm:mb-3"
                   style={{ backgroundColor: stat.iconBg }}
                 >
-                  <Icon size={22} style={{ color: stat.color }} />
+                  <Icon size={18} className="sm:hidden" style={{ color: stat.color }} />
+                  <Icon size={22} className="hidden sm:block" style={{ color: stat.color }} />
                 </div>
                 <AnimatedCounter target={stat.value} suffix={stat.suffix} color={stat.color} />
-                <p className="text-white/70 text-xs mt-1.5 font-medium">{stat.label}</p>
+                <p className="text-white/70 text-[10px] sm:text-xs mt-1 font-medium">{stat.label}</p>
               </div>
             );
           })}
