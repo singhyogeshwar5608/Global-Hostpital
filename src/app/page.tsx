@@ -17,6 +17,7 @@ import PackageShop from "@/components/healthcare/PackageShop";
 import LabPanel from "@/components/healthcare/LabPanel";
 import PatientPortal from "@/components/healthcare/PatientPortal";
 import DoctorPortalPanel from "@/components/healthcare/DoctorPortalPanel";
+import MultiRoleLogin from "@/components/healthcare/MultiRoleLogin";
 
 export default function Home() {
   return (
@@ -36,6 +37,7 @@ export default function Home() {
       </div>
       <Footer />
       <AppointmentModal />
+      <MultiRoleLogin />
       <AdminPanel />
       <MedicineShop />
       <PackageShop />

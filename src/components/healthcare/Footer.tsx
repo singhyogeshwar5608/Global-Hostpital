@@ -11,12 +11,8 @@ import {
   MapPin,
   CreditCard,
   ShieldCheck,
-  FlaskConical,
-  Stethoscope,
 } from "lucide-react";
-import { useAdminStore } from "@/store/admin-store";
-import { useLabStore } from "@/store/lab-store";
-import { useDoctorPortalStore } from "@/store/doctor-portal-store";
+import { useAuthStore } from "@/store/auth-store";
 
 const quickLinks = [
   "Home",
@@ -46,9 +42,7 @@ const company = [
 ];
 
 export default function Footer() {
-  const { openPanel } = useAdminStore();
-  const { openLabPanel } = useLabStore();
-  const { openPanel: openDoctorPanel } = useDoctorPortalStore();
+  const { openLoginPage } = useAuthStore();
 
   return (
     <footer className="bg-teal-dark text-white" id="contact">
@@ -96,35 +90,15 @@ export default function Footer() {
                   </a>
                 </li>
               ))}
-              {/* Admin Panel Button - below Health Packages */}
+              {/* Single Admin Panel Button */}
               <li className="pt-3">
                 <button
-                  onClick={openPanel}
-                  className="group flex items-center gap-2 text-white/50 text-sm hover:text-white transition-all duration-300 rounded-lg px-3 py-2 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20"
-                  title="Admin Access"
+                  onClick={openLoginPage}
+                  className="group flex items-center gap-2.5 text-sm transition-all duration-300 rounded-xl px-4 py-3 bg-gradient-to-r from-green-600 to-emerald-500 hover:from-green-500 hover:to-emerald-400 text-white font-semibold shadow-lg shadow-green-600/25 hover:shadow-green-500/40 hover:scale-[1.03] active:scale-[0.98]"
+                  title="Admin Panel - Login to access your portal"
                 >
-                  <ShieldCheck size={16} className="text-white/50 group-hover:text-white transition-colors" />
-                  <span className="font-medium">Admin Panel</span>
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={openLabPanel}
-                  className="group flex items-center gap-2 text-white/50 text-sm hover:text-white transition-all duration-300 rounded-lg px-3 py-2 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20"
-                  title="Lab Portal"
-                >
-                  <FlaskConical size={16} className="text-white/50 group-hover:text-white transition-colors" />
-                  <span className="font-medium">Lab Login</span>
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={openDoctorPanel}
-                  className="group flex items-center gap-2 text-sm transition-all duration-300 rounded-lg px-3.5 py-2.5 bg-gradient-to-r from-teal to-emerald-500 hover:from-teal-light hover:to-emerald-400 text-white font-semibold shadow-md hover:shadow-lg hover:scale-[1.03]"
-                  title="Doctor Portal"
-                >
-                  <Stethoscope size={16} className="transition-transform group-hover:rotate-12" />
-                  <span>Doctor Portal</span>
+                  <ShieldCheck size={18} className="transition-transform group-hover:scale-110" />
+                  <span>Admin Panel</span>
                 </button>
               </li>
             </ul>

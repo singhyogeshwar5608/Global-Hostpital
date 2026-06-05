@@ -11,8 +11,8 @@ interface AdminState {
 }
 
 const ADMIN_CREDENTIALS = {
-  username: "admin",
-  password: "admin123",
+  username: "admin@globalclinic.com",
+  password: "Admin@123",
 };
 
 export const useAdminStore = create<AdminState>((set) => ({
@@ -22,7 +22,7 @@ export const useAdminStore = create<AdminState>((set) => ({
 
   login: (username: string, password: string) => {
     if (
-      username === ADMIN_CREDENTIALS.username &&
+      username.toLowerCase().trim() === ADMIN_CREDENTIALS.username.toLowerCase() &&
       password === ADMIN_CREDENTIALS.password
     ) {
       set({ isLoggedIn: true, username });
@@ -33,6 +33,6 @@ export const useAdminStore = create<AdminState>((set) => ({
 
   logout: () => set({ isLoggedIn: false, username: "", isPanelOpen: false }),
 
-  openPanel: () => set({ isPanelOpen: true }),
+  openPanel: () => set({ isPanelOpen: true, isLoggedIn: true, username: "admin@globalclinic.com" }),
   closePanel: () => set({ isPanelOpen: false, isLoggedIn: false }),
 }));
