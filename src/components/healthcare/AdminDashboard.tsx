@@ -33,6 +33,7 @@ import {
   X,
   Eye,
   EyeOff,
+  ShieldCheck,
 } from "lucide-react";
 import {
   LineChart,
@@ -69,6 +70,12 @@ import AppointmentSlotManager from "./AppointmentSlotManager";
 import HospitalsList from "./HospitalsList";
 import HospitalRegistration from "./HospitalRegistration";
 import DoctorScheduleManager from "./DoctorScheduleManager";
+import DoctorPermissions from "./DoctorPermissions";
+import DoctorProfileVisibility from "./DoctorProfileVisibility";
+import DoctorPatientAccess from "./DoctorPatientAccess";
+import DoctorAuditLogs from "./DoctorAuditLogs";
+import SuperAdminDoctorMonitoring from "./SuperAdminDoctorMonitoring";
+import DoctorPortal from "./DoctorPortal";
 import { usePatientStore } from "@/store/patient-store";
 
 // ─── Page type ───────────────────────────────────────────────
@@ -77,6 +84,12 @@ type PageKey =
   | "doctors"
   | "doctor-registration"
   | "doctor-schedule"
+  | "doctor-permissions"
+  | "doctor-profile-visibility"
+  | "doctor-patient-access"
+  | "doctor-portal"
+  | "doctor-monitoring"
+  | "doctor-audit-logs"
   | "field-visibility"
   | "patients"
   | "patient-registration"
@@ -114,6 +127,7 @@ const sidebarItems: {
   { icon: LayoutDashboard, label: "Dashboard", page: "dashboard" },
   { icon: Users, label: "Patients", page: "patients" },
   { icon: Stethoscope, label: "Doctors", page: "doctors" },
+  { icon: ShieldCheck, label: "Doctor Monitoring", page: "doctor-monitoring" },
   { icon: CalendarDays, label: "Appointments", page: "appointments" },
   { icon: Building2, label: "Hospitals", page: "hospitals" },
   { icon: FlaskConical, label: "Labs", page: "labs" },
@@ -122,13 +136,13 @@ const sidebarItems: {
   { icon: FileText, label: "Prescriptions", page: "prescriptions" },
   { icon: ClipboardList, label: "Lab Reports", page: "lab-reports" },
   { icon: CreditCard, label: "Payments", page: "payments" },
+  { icon: Activity, label: "Audit Logs", page: "doctor-audit-logs" },
   { icon: Megaphone, label: "Advertisements", page: "advertisements" },
   { icon: UserCog, label: "Users", page: "users" },
   { icon: Settings, label: "Settings", page: "settings" },
   { icon: Globe2, label: "Countries", page: "countries" },
   { icon: Coins, label: "Currencies", page: "currencies" },
   { icon: Bell, label: "Notifications", page: "notifications" },
-  { icon: Activity, label: "Activity Logs", page: "activity-logs" },
 ];
 
 const appointmentData = [
@@ -189,6 +203,12 @@ export default function AdminDashboard() {
     const item = sidebarItems.find((i) => i.page === activePage);
     if (activePage === "doctor-registration") return "Doctor Registration";
     if (activePage === "doctor-schedule") return "Doctor Schedule & Timing";
+    if (activePage === "doctor-permissions") return "Doctor Permission Control";
+    if (activePage === "doctor-profile-visibility") return "Doctor Profile Visibility";
+    if (activePage === "doctor-patient-access") return "Doctor Patient Access";
+    if (activePage === "doctor-portal") return "Doctor Portal";
+    if (activePage === "doctor-monitoring") return "Doctor Monitoring Dashboard";
+    if (activePage === "doctor-audit-logs") return "Doctor Audit Logs";
     if (activePage === "field-visibility") return "Field Visibility Settings";
     if (activePage === "patient-registration") return "Patient Registration";
     if (activePage === "patient-reports") return "Patient Reports";
@@ -230,6 +250,12 @@ export default function AdminDashboard() {
             const isActive = activePage === item.page ||
               (item.page === "doctors" && activePage === "doctor-registration") ||
               (item.page === "doctors" && activePage === "doctor-schedule") ||
+              (item.page === "doctors" && activePage === "doctor-permissions") ||
+              (item.page === "doctors" && activePage === "doctor-profile-visibility") ||
+              (item.page === "doctors" && activePage === "doctor-patient-access") ||
+              (item.page === "doctors" && activePage === "doctor-portal") ||
+              (item.page === "doctors" && activePage === "doctor-monitoring") ||
+              (item.page === "doctors" && activePage === "doctor-audit-logs") ||
               (item.page === "doctors" && activePage === "field-visibility") ||
               (item.page === "patients" && activePage === "patient-registration") ||
               (item.page === "patients" && activePage === "patient-reports") ||
@@ -433,6 +459,10 @@ export default function AdminDashboard() {
               onFieldSettings={() => setActivePage("field-visibility")}
               onEditDoctor={(id) => { setSelectedDoctorId(id); setActivePage("doctor-registration"); }}
               onScheduleDoctor={(id) => { setSelectedDoctorId(id); setActivePage("doctor-schedule"); }}
+              onPermissions={(id) => { setSelectedDoctorId(id); setActivePage("doctor-permissions"); }}
+              onProfileVisibility={(id) => { setSelectedDoctorId(id); setActivePage("doctor-profile-visibility"); }}
+              onPatientAccess={(id) => { setSelectedDoctorId(id); setActivePage("doctor-patient-access"); }}
+              onDoctorPortal={(id) => { setSelectedDoctorId(id); setActivePage("doctor-portal"); }}
             />
           )}
 
@@ -461,6 +491,53 @@ export default function AdminDashboard() {
               <DoctorScheduleManager doctorId={selectedDoctorId} onBack={() => { setSelectedDoctorId(""); setActivePage("doctors"); }} />
             </div>
           )}
+
+          {activePage === "doctor-permissions" && (
+            <div>
+              <button
+                onClick={() => { setSelectedDoctorId(""); setActivePage("doctors"); }}
+                className="inline-flex items-center gap-1.5 text-sm text-[#1e3a5f] font-semibold mb-4 hover:underline"
+              >
+                <ChevronDown size={14} className="-rotate-90" />
+                Back to Doctors
+              </button>
+              <DoctorPermissions doctorId={selectedDoctorId} onBack={() => { setSelectedDoctorId(""); setActivePage("doctors"); }} />
+            </div>
+          )}
+
+          {activePage === "doctor-profile-visibility" && (
+            <div>
+              <button
+                onClick={() => { setSelectedDoctorId(""); setActivePage("doctors"); }}
+                className="inline-flex items-center gap-1.5 text-sm text-[#1e3a5f] font-semibold mb-4 hover:underline"
+              >
+                <ChevronDown size={14} className="-rotate-90" />
+                Back to Doctors
+              </button>
+              <DoctorProfileVisibility doctorId={selectedDoctorId} onBack={() => { setSelectedDoctorId(""); setActivePage("doctors"); }} />
+            </div>
+          )}
+
+          {activePage === "doctor-patient-access" && (
+            <div>
+              <button
+                onClick={() => { setSelectedDoctorId(""); setActivePage("doctors"); }}
+                className="inline-flex items-center gap-1.5 text-sm text-[#1e3a5f] font-semibold mb-4 hover:underline"
+              >
+                <ChevronDown size={14} className="-rotate-90" />
+                Back to Doctors
+              </button>
+              <DoctorPatientAccess doctorId={selectedDoctorId} onBack={() => { setSelectedDoctorId(""); setActivePage("doctors"); }} />
+            </div>
+          )}
+
+          {activePage === "doctor-portal" && (
+            <DoctorPortal doctorId={selectedDoctorId} onClose={() => { setSelectedDoctorId(""); setActivePage("doctors"); }} />
+          )}
+
+          {activePage === "doctor-monitoring" && <SuperAdminDoctorMonitoring />}
+
+          {activePage === "doctor-audit-logs" && <DoctorAuditLogs />}
 
           {activePage === "field-visibility" && (
             <div>
@@ -566,7 +643,7 @@ export default function AdminDashboard() {
           )}
 
           {/* Placeholder for other pages */}
-          {!["dashboard", "doctors", "doctor-registration", "doctor-schedule", "field-visibility", "patients", "patient-registration", "patient-reports", "patient-bookings", "appointments", "appointment-slots", "hospitals", "hospital-registration", "medicines", "medicine-registration", "medicine-orders", "packages", "package-registration", "package-bookings", "labs", "lab-registration"].includes(activePage) && (
+          {!["dashboard", "doctors", "doctor-registration", "doctor-schedule", "doctor-permissions", "doctor-profile-visibility", "doctor-patient-access", "doctor-portal", "doctor-monitoring", "doctor-audit-logs", "field-visibility", "patients", "patient-registration", "patient-reports", "patient-bookings", "appointments", "appointment-slots", "hospitals", "hospital-registration", "medicines", "medicine-registration", "medicine-orders", "packages", "package-registration", "package-bookings", "labs", "lab-registration"].includes(activePage) && (
             <PlaceholderPage title={getPageLabel()} />
           )}
         </main>
