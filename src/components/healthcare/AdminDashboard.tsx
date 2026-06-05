@@ -31,6 +31,8 @@ import {
   Upload,
   AlertTriangle,
   X,
+  Eye,
+  EyeOff,
 } from "lucide-react";
 import {
   LineChart,
@@ -47,27 +49,57 @@ import {
   ResponsiveContainer,
   Legend,
 } from "recharts";
+import DoctorRegistration from "./DoctorRegistration";
+import DoctorsList from "./DoctorsList";
+import FieldVisibilitySettings from "./FieldVisibilitySettings";
+
+// ─── Page type ───────────────────────────────────────────────
+type PageKey =
+  | "dashboard"
+  | "doctors"
+  | "doctor-registration"
+  | "field-visibility"
+  | "patients"
+  | "appointments"
+  | "hospitals"
+  | "labs"
+  | "medicines"
+  | "packages"
+  | "prescriptions"
+  | "lab-reports"
+  | "payments"
+  | "advertisements"
+  | "users"
+  | "settings"
+  | "countries"
+  | "currencies"
+  | "notifications"
+  | "activity-logs";
 
 // ─── Data ────────────────────────────────────────────────────
-const sidebarItems = [
-  { icon: LayoutDashboard, label: "Dashboard", active: true },
-  { icon: Users, label: "Patients" },
-  { icon: Stethoscope, label: "Doctors" },
-  { icon: CalendarDays, label: "Appointments" },
-  { icon: Building2, label: "Hospitals" },
-  { icon: FlaskConical, label: "Labs" },
-  { icon: Pill, label: "Medicines" },
-  { icon: Package, label: "Packages" },
-  { icon: FileText, label: "Prescriptions" },
-  { icon: ClipboardList, label: "Lab Reports" },
-  { icon: CreditCard, label: "Payments" },
-  { icon: Megaphone, label: "Advertisements" },
-  { icon: UserCog, label: "Users" },
-  { icon: Settings, label: "Settings" },
-  { icon: Globe2, label: "Countries" },
-  { icon: Coins, label: "Currencies" },
-  { icon: Bell, label: "Notifications" },
-  { icon: Activity, label: "Activity Logs" },
+const sidebarItems: {
+  icon: React.ElementType;
+  label: string;
+  page: PageKey;
+}[] = [
+  { icon: LayoutDashboard, label: "Dashboard", page: "dashboard" },
+  { icon: Users, label: "Patients", page: "patients" },
+  { icon: Stethoscope, label: "Doctors", page: "doctors" },
+  { icon: CalendarDays, label: "Appointments", page: "appointments" },
+  { icon: Building2, label: "Hospitals", page: "hospitals" },
+  { icon: FlaskConical, label: "Labs", page: "labs" },
+  { icon: Pill, label: "Medicines", page: "medicines" },
+  { icon: Package, label: "Packages", page: "packages" },
+  { icon: FileText, label: "Prescriptions", page: "prescriptions" },
+  { icon: ClipboardList, label: "Lab Reports", page: "lab-reports" },
+  { icon: CreditCard, label: "Payments", page: "payments" },
+  { icon: Megaphone, label: "Advertisements", page: "advertisements" },
+  { icon: UserCog, label: "Users", page: "users" },
+  { icon: Settings, label: "Settings", page: "settings" },
+  { icon: Globe2, label: "Countries", page: "countries" },
+  { icon: Coins, label: "Currencies", page: "currencies" },
+  { icon: Bell, label: "Notifications", page: "notifications" },
+  { icon: Activity, label: "Activity Logs", page: "activity-logs" },
 ];
 
 const appointmentData = [
@@ -115,6 +147,18 @@ const recentActivities = [
 export default function AdminDashboard() {
   const { logout, closePanel } = useAdminStore();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [activePage, setActivePage] = useState<PageKey>("dashboard");
+
+  const handleNavClick = (page: PageKey) => {
+    setActivePage(page);
+  };
+
+  const getPageLabel = (): string => {
+    const item = sidebarItems.find((i) => i.page === activePage);
+    if (activePage === "doctor-registration") return "Doctor Registration";
+    if (activePage === "field-visibility") return "Field Visibility Settings";
+    return item?.label || "Dashboard";
+  };
 
   return (
     <div className="fixed inset-0 z-[100] bg-[#f1f5f9] flex">
@@ -139,19 +183,25 @@ export default function AdminDashboard() {
 
         {/* Nav Items */}
         <nav className="flex-1 overflow-y-auto py-3 px-3 space-y-0.5">
-          {sidebarItems.map((item) => (
-            <button
-              key={item.label}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
-                item.active
-                  ? "bg-blue-500/20 text-blue-300"
-                  : "text-white/60 hover:bg-white/5 hover:text-white/90"
-              }`}
-            >
-              <item.icon size={18} className="shrink-0" />
-              {!sidebarCollapsed && <span className="truncate">{item.label}</span>}
-            </button>
-          ))}
+          {sidebarItems.map((item) => {
+            const isActive = activePage === item.page ||
+              (item.page === "doctors" && activePage === "doctor-registration") ||
+              (item.page === "doctors" && activePage === "field-visibility");
+            return (
+              <button
+                key={item.label}
+                onClick={() => handleNavClick(item.page)}
+                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
+                  isActive
+                    ? "bg-blue-500/20 text-blue-300"
+                    : "text-white/60 hover:bg-white/5 hover:text-white/90"
+                }`}
+              >
+                <item.icon size={18} className="shrink-0" />
+                {!sidebarCollapsed && <span className="truncate">{item.label}</span>}
+              </button>
+            );
+          })}
         </nav>
 
         {/* Collapse Toggle */}
@@ -214,280 +264,278 @@ export default function AdminDashboard() {
           </div>
         </header>
 
-        {/* Content */}
+        {/* Page Content */}
         <main className="flex-1 overflow-y-auto p-6">
           {/* Breadcrumb */}
           <div className="flex items-center justify-between mb-6">
             <div className="text-sm text-gray-500">
-              <span className="text-blue-500">Home</span> &gt; <span className="text-gray-800 font-medium">Dashboard</span>
-            </div>
-            <div className="flex items-center gap-2 bg-white rounded-lg border px-3 py-1.5 text-sm text-gray-600">
-              <CalendarDays size={14} />
-              01 May, 2024 - 31 May, 2024
-            </div>
-          </div>
-
-          {/* Top Stat Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-6">
-            <StatCard
-              icon={<Users size={22} />}
-              iconBg="bg-blue-100"
-              iconColor="text-blue-600"
-              label="Total Patients"
-              value="12,548"
-              change="+12.5%"
-              isUp
-            />
-            <StatCard
-              icon={<Stethoscope size={22} />}
-              iconBg="bg-purple-100"
-              iconColor="text-purple-600"
-              label="Total Doctors"
-              value="1,248"
-              change="+8.2%"
-              isUp
-            />
-            <StatCard
-              icon={<FlaskConical size={22} />}
-              iconBg="bg-green-100"
-              iconColor="text-green-600"
-              label="Total Labs"
-              value="320"
-              change="+15.3%"
-              isUp
-            />
-            <StatCard
-              icon={<CreditCard size={22} />}
-              iconBg="bg-orange-100"
-              iconColor="text-orange-600"
-              label="Total Revenue"
-              value="$256,800"
-              change="+18.7%"
-              isUp
-            />
-          </div>
-
-          {/* Charts Row */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 mb-6">
-            {/* Appointments Line Chart */}
-            <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-100">
-              <div className="flex items-center justify-between mb-4">
-                <div>
-                  <h3 className="font-bold text-gray-900 text-sm">Appointments</h3>
-                  <div className="flex items-center gap-2 mt-0.5">
-                    <span className="text-lg font-bold text-gray-900">4,785</span>
-                    <span className="text-xs text-green-600 font-medium flex items-center gap-0.5">
-                      <TrendingUp size={12} /> +12.5%
-                    </span>
-                  </div>
-                </div>
-                <select className="text-xs bg-gray-100 rounded-lg px-2 py-1 text-gray-600 border-0 focus:outline-none">
-                  <option>This Year</option>
-                </select>
-              </div>
-              <ResponsiveContainer width="100%" height={200}>
-                <LineChart data={appointmentData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                  <XAxis dataKey="month" tick={{ fontSize: 11, fill: "#94a3b8" }} axisLine={false} tickLine={false} />
-                  <YAxis tick={{ fontSize: 11, fill: "#94a3b8" }} axisLine={false} tickLine={false} />
-                  <Tooltip />
-                  <Line type="monotone" dataKey="appointments" stroke="#3b82f6" strokeWidth={2.5} dot={{ fill: "#3b82f6", r: 4 }} />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
-
-            {/* Revenue Bar Chart */}
-            <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-100">
-              <div className="flex items-center justify-between mb-4">
-                <div>
-                  <h3 className="font-bold text-gray-900 text-sm">Revenue Overview</h3>
-                  <div className="flex items-center gap-2 mt-0.5">
-                    <span className="text-lg font-bold text-gray-900">$256,800</span>
-                    <span className="text-xs text-green-600 font-medium flex items-center gap-0.5">
-                      <TrendingUp size={12} /> +18.7%
-                    </span>
-                  </div>
-                </div>
-                <select className="text-xs bg-gray-100 rounded-lg px-2 py-1 text-gray-600 border-0 focus:outline-none">
-                  <option>This Year</option>
-                </select>
-              </div>
-              <ResponsiveContainer width="100%" height={200}>
-                <BarChart data={revenueData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                  <XAxis dataKey="month" tick={{ fontSize: 11, fill: "#94a3b8" }} axisLine={false} tickLine={false} />
-                  <YAxis tick={{ fontSize: 11, fill: "#94a3b8" }} axisLine={false} tickLine={false} />
-                  <Tooltip formatter={(v: number) => `$${v.toLocaleString()}`} />
-                  <Bar dataKey="revenue" fill="#8b5cf6" radius={[4, 4, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-
-            {/* Top Services Pie Chart */}
-            <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-100">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="font-bold text-gray-900 text-sm">Top Services</h3>
-                <select className="text-xs bg-gray-100 rounded-lg px-2 py-1 text-gray-600 border-0 focus:outline-none">
-                  <option>This Year</option>
-                </select>
-              </div>
-              <ResponsiveContainer width="100%" height={200}>
-                <PieChart>
-                  <Pie
-                    data={serviceData}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={50}
-                    outerRadius={75}
-                    paddingAngle={3}
-                    dataKey="value"
-                  >
-                    {serviceData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
-                  <Tooltip />
-                  <Legend
-                    iconType="circle"
-                    iconSize={8}
-                    wrapperStyle={{ fontSize: "11px" }}
-                  />
-                </PieChart>
-              </ResponsiveContainer>
+              <span
+                className="text-blue-500 cursor-pointer hover:underline"
+                onClick={() => setActivePage("dashboard")}
+              >
+                Home
+              </span>
+              {" > "}
+              <span className="text-gray-800 font-medium">{getPageLabel()}</span>
             </div>
           </div>
 
-          {/* Bottom Stat Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-6">
-            <StatCard
-              icon={<ShoppingCart size={22} />}
-              iconBg="bg-green-100"
-              iconColor="text-green-600"
-              label="Medicine Sales"
-              value="$58,650"
-              change="+11.3%"
-              isUp
-            />
-            <StatCard
-              icon={<Gift size={22} />}
-              iconBg="bg-purple-100"
-              iconColor="text-purple-600"
-              label="Package Sales"
-              value="$48,750"
-              change="+9.2%"
-              isUp
-            />
-            <StatCard
-              icon={<Upload size={22} />}
-              iconBg="bg-blue-100"
-              iconColor="text-blue-600"
-              label="Reports Uploaded"
-              value="2,450"
-              change="+14.8%"
-              isUp
-            />
-            <StatCard
-              icon={<AlertTriangle size={22} />}
-              iconBg="bg-red-100"
-              iconColor="text-red-600"
-              label="Due Payments"
-              value="$12,650"
-              change="-2.4%"
-              isUp={false}
-            />
-          </div>
+          {/* ─── Page Router ─── */}
+          {activePage === "dashboard" && <DashboardPage />}
 
-          {/* Bottom Section: Table + Activities */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-            {/* Recent Appointments Table */}
-            <div className="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-100">
-              <div className="flex items-center justify-between p-5 border-b border-gray-100">
-                <h3 className="font-bold text-gray-900 text-sm">Recent Appointments</h3>
-                <a href="#" className="text-blue-500 text-xs font-semibold hover:underline">
-                  View All
-                </a>
-              </div>
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="bg-gray-50">
-                      <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase">#</th>
-                      <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase">Patient</th>
-                      <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase">Doctor</th>
-                      <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase">Date & Time</th>
-                      <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase">Status</th>
-                      <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase">Payment</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {recentAppointments.map((apt) => (
-                      <tr key={apt.id} className="border-b border-gray-50 hover:bg-gray-50/50">
-                        <td className="px-5 py-3 text-gray-500 font-mono text-xs">{apt.id}</td>
-                        <td className="px-5 py-3 font-medium text-gray-900">{apt.patient}</td>
-                        <td className="px-5 py-3 text-gray-600">{apt.doctor}</td>
-                        <td className="px-5 py-3 text-gray-500 text-xs">{apt.date}</td>
-                        <td className="px-5 py-3">
-                          <span
-                            className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold ${
-                              apt.status === "Confirmed"
-                                ? "bg-green-100 text-green-700"
-                                : "bg-yellow-100 text-yellow-700"
-                            }`}
-                          >
-                            {apt.status}
-                          </span>
-                        </td>
-                        <td className="px-5 py-3">
-                          <span
-                            className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold ${
-                              apt.payment === "Paid"
-                                ? "bg-green-100 text-green-700"
-                                : "bg-red-100 text-red-700"
-                            }`}
-                          >
-                            {apt.payment}
-                          </span>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+          {activePage === "doctors" && (
+            <DoctorsList
+              onAddDoctor={() => setActivePage("doctor-registration")}
+              onFieldSettings={() => setActivePage("field-visibility")}
+            />
+          )}
+
+          {activePage === "doctor-registration" && (
+            <div>
+              <button
+                onClick={() => setActivePage("doctors")}
+                className="inline-flex items-center gap-1.5 text-sm text-[#1e3a5f] font-semibold mb-4 hover:underline"
+              >
+                <ChevronDown size={14} className="-rotate-90" />
+                Back to Doctors
+              </button>
+              <DoctorRegistration />
             </div>
+          )}
 
-            {/* Recent Activities */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100">
-              <div className="flex items-center justify-between p-5 border-b border-gray-100">
-                <h3 className="font-bold text-gray-900 text-sm">Recent Activities</h3>
-                <a href="#" className="text-blue-500 text-xs font-semibold hover:underline">
-                  View All
-                </a>
-              </div>
-              <div className="p-5 space-y-4">
-                {recentActivities.map((act, i) => (
-                  <div key={i} className="flex items-start gap-3">
-                    <div className="w-2 h-2 rounded-full bg-blue-500 mt-1.5 shrink-0" />
-                    <div>
-                      <p className="text-sm text-gray-700">{act.text}</p>
-                      <p className="text-xs text-gray-400 mt-0.5">{act.time}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
+          {activePage === "field-visibility" && (
+            <div>
+              <button
+                onClick={() => setActivePage("doctors")}
+                className="inline-flex items-center gap-1.5 text-sm text-[#1e3a5f] font-semibold mb-4 hover:underline"
+              >
+                <ChevronDown size={14} className="-rotate-90" />
+                Back to Doctors
+              </button>
+              <FieldVisibilitySettings />
             </div>
-          </div>
+          )}
 
-          {/* Footer */}
-          <div className="mt-6 text-center text-xs text-gray-400 py-3">
-            &copy; 2024 Global Integrative Clinic. All rights reserved.
-          </div>
+          {/* Placeholder for other pages */}
+          {!["dashboard", "doctors", "doctor-registration", "field-visibility"].includes(activePage) && (
+            <PlaceholderPage title={getPageLabel()} />
+          )}
         </main>
       </div>
     </div>
   );
 }
 
-// ─── Stat Card Component ─────────────────────────────────────
+// ─── Dashboard Page ──────────────────────────────────────────
+function DashboardPage() {
+  return (
+    <>
+      {/* Top Stat Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-6">
+        <StatCard
+          icon={<Users size={22} />}
+          iconBg="bg-blue-100"
+          iconColor="text-blue-600"
+          label="Total Patients"
+          value="12,548"
+          change="+12.5%"
+          isUp
+        />
+        <StatCard
+          icon={<Stethoscope size={22} />}
+          iconBg="bg-purple-100"
+          iconColor="text-purple-600"
+          label="Total Doctors"
+          value="1,248"
+          change="+8.2%"
+          isUp
+        />
+        <StatCard
+          icon={<FlaskConical size={22} />}
+          iconBg="bg-green-100"
+          iconColor="text-green-600"
+          label="Total Labs"
+          value="320"
+          change="+15.3%"
+          isUp
+        />
+        <StatCard
+          icon={<CreditCard size={22} />}
+          iconBg="bg-orange-100"
+          iconColor="text-orange-600"
+          label="Total Revenue"
+          value="$256,800"
+          change="+18.7%"
+          isUp
+        />
+      </div>
+
+      {/* Charts Row */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 mb-6">
+        <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-100">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h3 className="font-bold text-gray-900 text-sm">Appointments</h3>
+              <div className="flex items-center gap-2 mt-0.5">
+                <span className="text-lg font-bold text-gray-900">4,785</span>
+                <span className="text-xs text-green-600 font-medium flex items-center gap-0.5">
+                  <TrendingUp size={12} /> +12.5%
+                </span>
+              </div>
+            </div>
+            <select className="text-xs bg-gray-100 rounded-lg px-2 py-1 text-gray-600 border-0 focus:outline-none">
+              <option>This Year</option>
+            </select>
+          </div>
+          <ResponsiveContainer width="100%" height={200}>
+            <LineChart data={appointmentData}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+              <XAxis dataKey="month" tick={{ fontSize: 11, fill: "#94a3b8" }} axisLine={false} tickLine={false} />
+              <YAxis tick={{ fontSize: 11, fill: "#94a3b8" }} axisLine={false} tickLine={false} />
+              <Tooltip />
+              <Line type="monotone" dataKey="appointments" stroke="#3b82f6" strokeWidth={2.5} dot={{ fill: "#3b82f6", r: 4 }} />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+
+        <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-100">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h3 className="font-bold text-gray-900 text-sm">Revenue Overview</h3>
+              <div className="flex items-center gap-2 mt-0.5">
+                <span className="text-lg font-bold text-gray-900">$256,800</span>
+                <span className="text-xs text-green-600 font-medium flex items-center gap-0.5">
+                  <TrendingUp size={12} /> +18.7%
+                </span>
+              </div>
+            </div>
+            <select className="text-xs bg-gray-100 rounded-lg px-2 py-1 text-gray-600 border-0 focus:outline-none">
+              <option>This Year</option>
+            </select>
+          </div>
+          <ResponsiveContainer width="100%" height={200}>
+            <BarChart data={revenueData}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+              <XAxis dataKey="month" tick={{ fontSize: 11, fill: "#94a3b8" }} axisLine={false} tickLine={false} />
+              <YAxis tick={{ fontSize: 11, fill: "#94a3b8" }} axisLine={false} tickLine={false} />
+              <Tooltip formatter={(v: number) => `$${v.toLocaleString()}`} />
+              <Bar dataKey="revenue" fill="#8b5cf6" radius={[4, 4, 0, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+
+        <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-100">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="font-bold text-gray-900 text-sm">Top Services</h3>
+            <select className="text-xs bg-gray-100 rounded-lg px-2 py-1 text-gray-600 border-0 focus:outline-none">
+              <option>This Year</option>
+            </select>
+          </div>
+          <ResponsiveContainer width="100%" height={200}>
+            <PieChart>
+              <Pie
+                data={serviceData}
+                cx="50%"
+                cy="50%"
+                innerRadius={50}
+                outerRadius={75}
+                paddingAngle={3}
+                dataKey="value"
+              >
+                {serviceData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={entry.color} />
+                ))}
+              </Pie>
+              <Tooltip />
+              <Legend iconType="circle" iconSize={8} wrapperStyle={{ fontSize: "11px" }} />
+            </PieChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+
+      {/* Bottom Stat Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-6">
+        <StatCard icon={<ShoppingCart size={22} />} iconBg="bg-green-100" iconColor="text-green-600" label="Medicine Sales" value="$58,650" change="+11.3%" isUp />
+        <StatCard icon={<Gift size={22} />} iconBg="bg-purple-100" iconColor="text-purple-600" label="Package Sales" value="$48,750" change="+9.2%" isUp />
+        <StatCard icon={<Upload size={22} />} iconBg="bg-blue-100" iconColor="text-blue-600" label="Reports Uploaded" value="2,450" change="+14.8%" isUp />
+        <StatCard icon={<AlertTriangle size={22} />} iconBg="bg-red-100" iconColor="text-red-600" label="Due Payments" value="$12,650" change="-2.4%" isUp={false} />
+      </div>
+
+      {/* Bottom Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+        <div className="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-100">
+          <div className="flex items-center justify-between p-5 border-b border-gray-100">
+            <h3 className="font-bold text-gray-900 text-sm">Recent Appointments</h3>
+            <a href="#" className="text-blue-500 text-xs font-semibold hover:underline">View All</a>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="bg-gray-50">
+                  <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase">#</th>
+                  <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase">Patient</th>
+                  <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase">Doctor</th>
+                  <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase">Date & Time</th>
+                  <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase">Status</th>
+                  <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase">Payment</th>
+                </tr>
+              </thead>
+              <tbody>
+                {recentAppointments.map((apt) => (
+                  <tr key={apt.id} className="border-b border-gray-50 hover:bg-gray-50/50">
+                    <td className="px-5 py-3 text-gray-500 font-mono text-xs">{apt.id}</td>
+                    <td className="px-5 py-3 font-medium text-gray-900">{apt.patient}</td>
+                    <td className="px-5 py-3 text-gray-600">{apt.doctor}</td>
+                    <td className="px-5 py-3 text-gray-500 text-xs">{apt.date}</td>
+                    <td className="px-5 py-3">
+                      <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold ${apt.status === "Confirmed" ? "bg-green-100 text-green-700" : "bg-yellow-100 text-yellow-700"}`}>{apt.status}</span>
+                    </td>
+                    <td className="px-5 py-3">
+                      <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold ${apt.payment === "Paid" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>{apt.payment}</span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100">
+          <div className="flex items-center justify-between p-5 border-b border-gray-100">
+            <h3 className="font-bold text-gray-900 text-sm">Recent Activities</h3>
+            <a href="#" className="text-blue-500 text-xs font-semibold hover:underline">View All</a>
+          </div>
+          <div className="p-5 space-y-4">
+            {recentActivities.map((act, i) => (
+              <div key={i} className="flex items-start gap-3">
+                <div className="w-2 h-2 rounded-full bg-blue-500 mt-1.5 shrink-0" />
+                <div>
+                  <p className="text-sm text-gray-700">{act.text}</p>
+                  <p className="text-xs text-gray-400 mt-0.5">{act.time}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
+
+// ─── Placeholder Page ────────────────────────────────────────
+function PlaceholderPage({ title }: { title: string }) {
+  return (
+    <div className="flex flex-col items-center justify-center py-20">
+      <div className="w-20 h-20 rounded-full bg-gray-100 flex items-center justify-center mb-5">
+        <LayoutDashboard size={32} className="text-gray-400" />
+      </div>
+      <h3 className="text-xl font-bold text-gray-900 mb-2">{title}</h3>
+      <p className="text-gray-500 text-sm">This module is coming soon.</p>
+    </div>
+  );
+}
+
+// ─── Stat Card ───────────────────────────────────────────────
 function StatCard({
   icon,
   iconBg,
