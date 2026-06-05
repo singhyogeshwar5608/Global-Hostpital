@@ -61,7 +61,7 @@ function AnimatedCounter({ target, suffix }: { target: number; suffix: string })
 
 export default function Statistics() {
   return (
-    <section className="py-16 lg:py-20 gradient-dark-green relative overflow-hidden">
+    <section className="py-8 lg:py-10 gradient-dark-green relative overflow-hidden">
       {/* Decorative elements */}
       <div className="absolute top-0 left-0 w-full h-full opacity-10">
         <div className="absolute top-10 left-10 w-40 h-40 rounded-full border border-white/30" />
@@ -70,14 +70,14 @@ export default function Statistics() {
       </div>
 
       <div className="max-w-[1440px] mx-auto px-6 relative z-10">
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5">
           {stats.map((stat) => (
             <div key={stat.label} className="text-center">
-              <div className="w-14 h-14 rounded-2xl bg-white/15 backdrop-blur-sm flex items-center justify-center mx-auto mb-4">
-                <stat.icon size={28} className="text-white" />
+              <div className="w-10 h-10 rounded-xl bg-white/15 backdrop-blur-sm flex items-center justify-center mx-auto mb-2">
+                <stat.icon size={20} className="text-white" />
               </div>
               <AnimatedCounter target={stat.value} suffix={stat.suffix} />
-              <p className="text-white/80 text-sm mt-1.5 font-medium">{stat.label}</p>
+              <p className="text-white/80 text-xs mt-1 font-medium">{stat.label}</p>
             </div>
           ))}
         </div>
