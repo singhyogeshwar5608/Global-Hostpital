@@ -10,11 +10,11 @@ import {
 } from "lucide-react";
 
 const stats = [
-  { icon: Users, value: 12548, suffix: "+", label: "Happy Patients", color: "#0d9488", bg: "#f0fdfa", iconBg: "#ccfbf1" },
-  { icon: Stethoscope, value: 248, suffix: "+", label: "Expert Doctors", color: "#7c3aed", bg: "#f5f3ff", iconBg: "#ede9fe" },
-  { icon: FlaskConical, value: 320, suffix: "+", label: "Partner Labs", color: "#ea580c", bg: "#fff7ed", iconBg: "#ffedd5" },
-  { icon: CalendarCheck, value: 15000, suffix: "+", label: "Appointments", color: "#2563eb", bg: "#eff6ff", iconBg: "#dbeafe" },
-  { icon: ThumbsUp, value: 98, suffix: "%", label: "Patient Satisfaction", color: "#e11d48", bg: "#fff1f2", iconBg: "#fce7f3" },
+  { icon: Users, value: 12548, suffix: "+", label: "Happy Patients", color: "#5eead4", iconBg: "rgba(255,255,255,0.15)" },
+  { icon: Stethoscope, value: 248, suffix: "+", label: "Expert Doctors", color: "#c4b5fd", iconBg: "rgba(255,255,255,0.15)" },
+  { icon: FlaskConical, value: 320, suffix: "+", label: "Partner Labs", color: "#fdba74", iconBg: "rgba(255,255,255,0.15)" },
+  { icon: CalendarCheck, value: 15000, suffix: "+", label: "Appointments", color: "#93c5fd", iconBg: "rgba(255,255,255,0.15)" },
+  { icon: ThumbsUp, value: 98, suffix: "%", label: "Patient Satisfaction", color: "#fda4af", iconBg: "rgba(255,255,255,0.15)" },
 ];
 
 function AnimatedCounter({ target, suffix, color }: { target: number; suffix: string; color: string }) {
@@ -56,7 +56,7 @@ function AnimatedCounter({ target, suffix, color }: { target: number; suffix: st
 
 export default function Statistics() {
   return (
-    <section className="py-10 lg:py-12 bg-white">
+    <section className="py-10 lg:py-12 bg-gradient-to-r from-[#065a50] via-[#0a7a6a] to-[#065a50]">
       <div className="max-w-[1200px] mx-auto px-6">
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
           {stats.map((stat) => {
@@ -64,8 +64,7 @@ export default function Statistics() {
             return (
               <div
                 key={stat.label}
-                className="rounded-2xl p-5 text-center hover:-translate-y-1 hover:shadow-lg transition-all duration-300 cursor-default"
-                style={{ backgroundColor: stat.bg }}
+                className="rounded-2xl p-5 text-center bg-white/10 backdrop-blur-sm hover:-translate-y-1 hover:bg-white/15 hover:shadow-lg transition-all duration-300 cursor-default"
               >
                 <div
                   className="w-11 h-11 rounded-xl flex items-center justify-center mx-auto mb-3"
@@ -74,7 +73,7 @@ export default function Statistics() {
                   <Icon size={22} style={{ color: stat.color }} />
                 </div>
                 <AnimatedCounter target={stat.value} suffix={stat.suffix} color={stat.color} />
-                <p className="text-gray-500 text-xs mt-1.5 font-medium">{stat.label}</p>
+                <p className="text-white/70 text-xs mt-1.5 font-medium">{stat.label}</p>
               </div>
             );
           })}
