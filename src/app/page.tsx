@@ -3,9 +3,7 @@ import Hero from "@/components/healthcare/Hero";
 import Services from "@/components/healthcare/Services";
 import Statistics from "@/components/healthcare/Statistics";
 import FeatureCards from "@/components/healthcare/FeatureCards";
-import WhyChooseUs from "@/components/healthcare/WhyChooseUs";
-import Testimonials from "@/components/healthcare/Testimonials";
-import EmergencySupport from "@/components/healthcare/EmergencySupport";
+import CombinedSection from "@/components/healthcare/CombinedSection";
 import Blog from "@/components/healthcare/Blog";
 import MobileApp from "@/components/healthcare/MobileApp";
 import Partners from "@/components/healthcare/Partners";
@@ -28,9 +26,7 @@ export default function Home() {
         <Services />
         <Statistics />
         <FeatureCards />
-        <WhyChooseUs />
-        <Testimonials />
-        <EmergencySupport />
+        <CombinedSection />
         <Blog />
         <MobileApp />
         <Partners />
