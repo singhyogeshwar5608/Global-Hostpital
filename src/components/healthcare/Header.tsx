@@ -20,26 +20,19 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useAppointmentStore } from "@/store/appointment-store";
 import { useMedicineStore } from "@/store/medicine-store";
-import { usePackageStore } from "@/store/package-store";
-import { usePatientStore } from "@/store/patient-store";
-import { Pill, Package, Users } from "lucide-react";
 
 const navLinks = [
   { label: "Home", href: "#" },
   { label: "Find Doctors", href: "#services" },
   { label: "Services", href: "#services" },
   { label: "Labs", href: "#features" },
-  { label: "About Us", href: "#why-us" },
-  { label: "Contact Us", href: "#contact" },
 ];
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const { openModal } = useAppointmentStore();
-  const { openShop, getCartItemCount } = useMedicineStore();
-  const { openShop: openPackageShop } = usePackageStore();
-  const { openPortal: openPatientPortal } = usePatientStore();
+  const { getCartItemCount } = useMedicineStore();
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 40);
@@ -124,27 +117,6 @@ export default function Header() {
                 {link.label}
               </a>
             ))}
-            <button
-              onClick={openShop}
-              className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-teal hover:bg-mint rounded-lg transition-colors flex items-center gap-1.5"
-            >
-              <Pill size={14} />
-              Medicines
-            </button>
-            <button
-              onClick={openPackageShop}
-              className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-teal hover:bg-mint rounded-lg transition-colors flex items-center gap-1.5"
-            >
-              <Package size={14} />
-              Packages
-            </button>
-            <button
-              onClick={openPatientPortal}
-              className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-teal hover:bg-mint rounded-lg transition-colors flex items-center gap-1.5"
-            >
-              <Users size={14} />
-              Patient Portal
-            </button>
           </div>
 
           {/* Right Actions */}
@@ -154,7 +126,6 @@ export default function Header() {
               <Search size={20} className="hidden sm:block" />
             </button>
             <button
-              onClick={openShop}
               className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl flex items-center justify-center text-gray-500 hover:text-teal hover:bg-mint transition-colors relative"
             >
               <ShoppingCart size={18} className="sm:hidden" />
@@ -192,24 +163,6 @@ export default function Header() {
                 {link.label}
               </a>
             ))}
-            <button
-              onClick={() => { openShop(); setMobileOpen(false); }}
-              className="block w-full text-left py-2.5 text-gray-700 hover:text-teal font-medium text-sm border-b border-gray-50 flex items-center gap-1.5"
-            >
-              <Pill size={14} /> Medicines
-            </button>
-            <button
-              onClick={() => { openPackageShop(); setMobileOpen(false); }}
-              className="block w-full text-left py-2.5 text-gray-700 hover:text-teal font-medium text-sm border-b border-gray-50 flex items-center gap-1.5"
-            >
-              <Package size={14} /> Packages
-            </button>
-            <button
-              onClick={() => { openPatientPortal(); setMobileOpen(false); }}
-              className="block w-full text-left py-2.5 text-gray-700 hover:text-teal font-medium text-sm border-b border-gray-50 flex items-center gap-1.5"
-            >
-              <Users size={14} /> Patient Portal
-            </button>
             <Button
               onClick={() => { openModal(); setMobileOpen(false); }}
               className="gradient-teal text-white rounded-xl px-5 h-10 font-semibold w-full mt-4 text-sm"
