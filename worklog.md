@@ -77,3 +77,37 @@ Stage Summary:
 - View detail modal with full hospital information
 - Search by name, city, specialty, registration number
 - Filter by type (Government/Private/Semi-Gov/Trust/NGO) and status
+---
+Task ID: 1
+Agent: Main Agent
+Task: Add doctor edit functionality and schedule/timing management in dashboard
+
+Work Log:
+- Read existing DoctorRegistration, DoctorsList, AdminDashboard, and appointment-store
+- Updated DoctorRegistration to support edit mode with editId and onDone props
+- Updated DoctorsList to add Edit (pencil) and Schedule (clock) buttons in action column
+- Added schedule status column showing if doctor has schedule set (green check) or not (red X)
+- Created DoctorScheduleManager component with:
+  - Doctor header card with photo and info
+  - Working days selection (Mon-Sun toggle)
+  - Slot duration selection (15/30/45/60 min)
+  - Two slot selection modes: Quick Select (predefined slots + auto-generate) and Custom Add (custom time)
+  - Schedule preview
+  - Current schedule display with booked slot indicators
+  - Upcoming bookings table for the doctor
+  - Delete schedule with confirmation modal
+- Updated AdminDashboard with:
+  - Added selectedDoctorId state
+  - Added doctor-schedule PageKey
+  - Updated doctor page routing with onEditDoctor and onScheduleDoctor callbacks
+  - Added doctor-schedule page with back navigation
+  - Updated sidebar active state matching
+  - Updated placeholder page check list
+- Build successful, server running on port 3000
+
+Stage Summary:
+- Doctor edit functionality: Click edit button on any doctor to open pre-filled registration form
+- Doctor schedule management: Click clock button on any doctor to manage their availability/timing
+- Doctors can set: working days, time slots, appointment duration
+- Schedule status shown in doctors list (green = active, red = not set)
+- All changes integrated into existing admin dashboard navigation

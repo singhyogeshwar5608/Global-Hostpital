@@ -68,6 +68,7 @@ import AppointmentsList from "./AppointmentsList";
 import AppointmentSlotManager from "./AppointmentSlotManager";
 import HospitalsList from "./HospitalsList";
 import HospitalRegistration from "./HospitalRegistration";
+import DoctorScheduleManager from "./DoctorScheduleManager";
 import { usePatientStore } from "@/store/patient-store";
 
 // ─── Page type ───────────────────────────────────────────────
@@ -75,6 +76,7 @@ type PageKey =
   | "dashboard"
   | "doctors"
   | "doctor-registration"
+  | "doctor-schedule"
   | "field-visibility"
   | "patients"
   | "patient-registration"
@@ -177,6 +179,7 @@ export default function AdminDashboard() {
   const [activePage, setActivePage] = useState<PageKey>("dashboard");
   const [selectedPatientId, setSelectedPatientId] = useState<string>("");
   const [selectedHospitalId, setSelectedHospitalId] = useState<string>("");
+  const [selectedDoctorId, setSelectedDoctorId] = useState<string>("");
 
   const handleNavClick = (page: PageKey) => {
     setActivePage(page);
@@ -185,6 +188,7 @@ export default function AdminDashboard() {
   const getPageLabel = (): string => {
     const item = sidebarItems.find((i) => i.page === activePage);
     if (activePage === "doctor-registration") return "Doctor Registration";
+    if (activePage === "doctor-schedule") return "Doctor Schedule & Timing";
     if (activePage === "field-visibility") return "Field Visibility Settings";
     if (activePage === "patient-registration") return "Patient Registration";
     if (activePage === "patient-reports") return "Patient Reports";
@@ -225,6 +229,7 @@ export default function AdminDashboard() {
           {sidebarItems.map((item) => {
             const isActive = activePage === item.page ||
               (item.page === "doctors" && activePage === "doctor-registration") ||
+              (item.page === "doctors" && activePage === "doctor-schedule") ||
               (item.page === "doctors" && activePage === "field-visibility") ||
               (item.page === "patients" && activePage === "patient-registration") ||
               (item.page === "patients" && activePage === "patient-reports") ||
@@ -424,21 +429,36 @@ export default function AdminDashboard() {
 
           {activePage === "doctors" && (
             <DoctorsList
-              onAddDoctor={() => setActivePage("doctor-registration")}
+              onAddDoctor={() => { setSelectedDoctorId(""); setActivePage("doctor-registration"); }}
               onFieldSettings={() => setActivePage("field-visibility")}
+              onEditDoctor={(id) => { setSelectedDoctorId(id); setActivePage("doctor-registration"); }}
+              onScheduleDoctor={(id) => { setSelectedDoctorId(id); setActivePage("doctor-schedule"); }}
             />
           )}
 
           {activePage === "doctor-registration" && (
             <div>
               <button
-                onClick={() => setActivePage("doctors")}
+                onClick={() => { setSelectedDoctorId(""); setActivePage("doctors"); }}
                 className="inline-flex items-center gap-1.5 text-sm text-[#1e3a5f] font-semibold mb-4 hover:underline"
               >
                 <ChevronDown size={14} className="-rotate-90" />
                 Back to Doctors
               </button>
-              <DoctorRegistration />
+              <DoctorRegistration editId={selectedDoctorId || null} onDone={() => { setSelectedDoctorId(""); setActivePage("doctors"); }} />
+            </div>
+          )}
+
+          {activePage === "doctor-schedule" && (
+            <div>
+              <button
+                onClick={() => { setSelectedDoctorId(""); setActivePage("doctors"); }}
+                className="inline-flex items-center gap-1.5 text-sm text-[#1e3a5f] font-semibold mb-4 hover:underline"
+              >
+                <ChevronDown size={14} className="-rotate-90" />
+                Back to Doctors
+              </button>
+              <DoctorScheduleManager doctorId={selectedDoctorId} onBack={() => { setSelectedDoctorId(""); setActivePage("doctors"); }} />
             </div>
           )}
 
@@ -546,7 +566,7 @@ export default function AdminDashboard() {
           )}
 
           {/* Placeholder for other pages */}
-          {!["dashboard", "doctors", "doctor-registration", "field-visibility", "patients", "patient-registration", "patient-reports", "patient-bookings", "appointments", "appointment-slots", "hospitals", "hospital-registration", "medicines", "medicine-registration", "medicine-orders", "packages", "package-registration", "package-bookings", "labs", "lab-registration"].includes(activePage) && (
+          {!["dashboard", "doctors", "doctor-registration", "doctor-schedule", "field-visibility", "patients", "patient-registration", "patient-reports", "patient-bookings", "appointments", "appointment-slots", "hospitals", "hospital-registration", "medicines", "medicine-registration", "medicine-orders", "packages", "package-registration", "package-bookings", "labs", "lab-registration"].includes(activePage) && (
             <PlaceholderPage title={getPageLabel()} />
           )}
         </main>

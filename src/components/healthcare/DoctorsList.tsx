@@ -6,6 +6,11 @@ import {
   type FieldKey,
 } from "@/store/doctor-store";
 import {
+  useAppointmentStore,
+  dayLabels,
+  formatTime,
+} from "@/store/appointment-store";
+import {
   Search,
   Plus,
   Trash2,
@@ -21,16 +26,26 @@ import {
   X,
   ChevronLeft,
   ChevronRight,
+  Edit3,
+  Clock,
+  CalendarDays,
+  CheckCircle2,
+  XCircle,
 } from "lucide-react";
 
 export default function DoctorsList({
   onAddDoctor,
   onFieldSettings,
+  onEditDoctor,
+  onScheduleDoctor,
 }: {
   onAddDoctor: () => void;
   onFieldSettings: () => void;
+  onEditDoctor: (id: string) => void;
+  onScheduleDoctor: (id: string) => void;
 }) {
   const { doctors, deleteDoctor, fieldVisibility } = useDoctorStore();
+  const { schedules } = useAppointmentStore();
   const [searchQuery, setSearchQuery] = useState("");
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
 
@@ -44,6 +59,12 @@ export default function DoctorsList({
   const handleDelete = (id: string) => {
     deleteDoctor(id);
     setDeleteConfirm(null);
+  };
+
+  const getDoctorScheduleStatus = (doctorId: string) => {
+    const schedule = schedules.find((s) => s.doctorId === doctorId);
+    if (!schedule) return null;
+    return schedule;
   };
 
   return (
@@ -158,6 +179,9 @@ export default function DoctorsList({
                   </th>
                 )}
                 <th className="text-left px-5 py-3.5 text-xs font-bold text-gray-500 uppercase tracking-wider">
+                  Schedule
+                </th>
+                <th className="text-left px-5 py-3.5 text-xs font-bold text-gray-500 uppercase tracking-wider">
                   Location
                 </th>
                 <th className="text-center px-5 py-3.5 text-xs font-bold text-gray-500 uppercase tracking-wider">
@@ -166,92 +190,129 @@ export default function DoctorsList({
               </tr>
             </thead>
             <tbody>
-              {filtered.map((doc) => (
-                <tr
-                  key={doc.id}
-                  className="border-b border-gray-100 hover:bg-gray-50/50 transition-colors"
-                >
-                  <td className="px-5 py-3.5">
-                    <div className="flex items-center gap-3">
-                      <img
-                        src={doc.photo}
-                        alt={doc.name}
-                        className="w-10 h-10 rounded-lg object-cover border border-gray-100"
-                      />
-                      <div>
-                        <div className="font-semibold text-gray-900 text-sm">
-                          {doc.name}
+              {filtered.map((doc) => {
+                const scheduleStatus = getDoctorScheduleStatus(doc.id);
+                return (
+                  <tr
+                    key={doc.id}
+                    className="border-b border-gray-100 hover:bg-gray-50/50 transition-colors"
+                  >
+                    <td className="px-5 py-3.5">
+                      <div className="flex items-center gap-3">
+                        <img
+                          src={doc.photo}
+                          alt={doc.name}
+                          className="w-10 h-10 rounded-lg object-cover border border-gray-100"
+                        />
+                        <div>
+                          <div className="font-semibold text-gray-900 text-sm">
+                            {doc.name}
+                          </div>
+                          <div className="text-xs text-gray-400">{doc.id}</div>
                         </div>
-                        <div className="text-xs text-gray-400">{doc.id}</div>
                       </div>
-                    </div>
-                  </td>
-                  <td className="px-5 py-3.5">
-                    <div className="text-gray-700 text-sm">{doc.qualification}</div>
-                    <div className="text-xs text-gray-400">{doc.degree}</div>
-                  </td>
-                  {fieldVisibility.specialty && (
+                    </td>
                     <td className="px-5 py-3.5">
-                      <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-semibold">
-                        <Stethoscope size={10} />
-                        {doc.specialty}
-                      </span>
+                      <div className="text-gray-700 text-sm">{doc.qualification}</div>
+                      <div className="text-xs text-gray-400">{doc.degree}</div>
                     </td>
-                  )}
-                  {fieldVisibility.mobile && (
-                    <td className="px-5 py-3.5 text-gray-600 text-xs">
-                      {doc.mobile}
-                    </td>
-                  )}
-                  {fieldVisibility.email && (
-                    <td className="px-5 py-3.5 text-gray-600 text-xs">
-                      {doc.email}
-                    </td>
-                  )}
-                  {fieldVisibility.hospitalName && (
-                    <td className="px-5 py-3.5 text-gray-600 text-xs">
-                      {doc.hospitalName}
-                    </td>
-                  )}
-                  {fieldVisibility.consultancyFee && (
-                    <td className="px-5 py-3.5">
-                      <span className="font-semibold text-[#1e3a5f]">${doc.consultancyFee}</span>
-                    </td>
-                  )}
-                  <td className="px-5 py-3.5">
-                    <div className="flex items-center gap-1 text-xs text-gray-500">
-                      <MapPin size={10} />
-                      {doc.district}, {doc.state}
-                    </div>
-                  </td>
-                  <td className="px-5 py-3.5 text-center">
-                    {deleteConfirm === doc.id ? (
-                      <div className="flex items-center gap-2 justify-center">
-                        <button
-                          onClick={() => handleDelete(doc.id)}
-                          className="px-3 py-1.5 rounded-lg bg-red-500 text-white text-xs font-semibold hover:bg-red-600 transition-colors"
-                        >
-                          Confirm
-                        </button>
-                        <button
-                          onClick={() => setDeleteConfirm(null)}
-                          className="px-3 py-1.5 rounded-lg bg-gray-100 text-gray-600 text-xs font-semibold hover:bg-gray-200 transition-colors"
-                        >
-                          Cancel
-                        </button>
-                      </div>
-                    ) : (
-                      <button
-                        onClick={() => setDeleteConfirm(doc.id)}
-                        className="p-2 rounded-lg text-gray-400 hover:text-red-500 hover:bg-red-50 transition-colors"
-                        title="Delete doctor"
-                      >
-                        <Trash2 size={16} />
-                      </button>
+                    {fieldVisibility.specialty && (
+                      <td className="px-5 py-3.5">
+                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-semibold">
+                          <Stethoscope size={10} />
+                          {doc.specialty}
+                        </span>
+                      </td>
                     )}
-                  </td>
-                </tr>
-              ))}
+                    {fieldVisibility.mobile && (
+                      <td className="px-5 py-3.5 text-gray-600 text-xs">
+                        {doc.mobile}
+                      </td>
+                    )}
+                    {fieldVisibility.email && (
+                      <td className="px-5 py-3.5 text-gray-600 text-xs">
+                        {doc.email}
+                      </td>
+                    )}
+                    {fieldVisibility.hospitalName && (
+                      <td className="px-5 py-3.5 text-gray-600 text-xs">
+                        {doc.hospitalName}
+                      </td>
+                    )}
+                    {fieldVisibility.consultancyFee && (
+                      <td className="px-5 py-3.5">
+                        <span className="font-semibold text-[#1e3a5f]">${doc.consultancyFee}</span>
+                      </td>
+                    )}
+                    <td className="px-5 py-3.5">
+                      {scheduleStatus ? (
+                        <div className="space-y-1">
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-green-50 text-green-700 text-xs font-semibold">
+                            <CheckCircle2 size={10} />
+                            {scheduleStatus.availableSlots.length} slots
+                          </span>
+                          <div className="text-[10px] text-gray-400">
+                            {scheduleStatus.availableDays.map((d) => dayLabels[d]).join(", ")}
+                          </div>
+                        </div>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-red-50 text-red-600 text-xs font-semibold">
+                          <XCircle size={10} />
+                          Not set
+                        </span>
+                      )}
+                    </td>
+                    <td className="px-5 py-3.5">
+                      <div className="flex items-center gap-1 text-xs text-gray-500">
+                        <MapPin size={10} />
+                        {doc.district}, {doc.state}
+                      </div>
+                    </td>
+                    <td className="px-5 py-3.5">
+                      <div className="flex items-center gap-1 justify-center">
+                        <button
+                          onClick={() => onEditDoctor(doc.id)}
+                          className="p-2 rounded-lg text-gray-400 hover:text-blue-500 hover:bg-blue-50 transition-colors"
+                          title="Edit doctor"
+                        >
+                          <Edit3 size={15} />
+                        </button>
+                        <button
+                          onClick={() => onScheduleDoctor(doc.id)}
+                          className="p-2 rounded-lg text-gray-400 hover:text-teal hover:bg-teal/5 transition-colors"
+                          title="Manage schedule & timing"
+                        >
+                          <Clock size={15} />
+                        </button>
+                        {deleteConfirm === doc.id ? (
+                          <div className="flex items-center gap-1">
+                            <button
+                              onClick={() => handleDelete(doc.id)}
+                              className="px-2 py-1 rounded-lg bg-red-500 text-white text-xs font-semibold hover:bg-red-600"
+                            >
+                              Yes
+                            </button>
+                            <button
+                              onClick={() => setDeleteConfirm(null)}
+                              className="px-2 py-1 rounded-lg bg-gray-100 text-gray-600 text-xs font-semibold hover:bg-gray-200"
+                            >
+                              No
+                            </button>
+                          </div>
+                        ) : (
+                          <button
+                            onClick={() => setDeleteConfirm(doc.id)}
+                            className="p-2 rounded-lg text-gray-400 hover:text-red-500 hover:bg-red-50 transition-colors"
+                            title="Delete doctor"
+                          >
+                            <Trash2 size={15} />
+                          </button>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
               {filtered.length === 0 && (
                 <tr>
                   <td

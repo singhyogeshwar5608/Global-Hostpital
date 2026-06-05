@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   useDoctorStore,
   type FieldKey,
@@ -28,8 +28,13 @@ import {
   EyeOff,
 } from "lucide-react";
 
-export default function DoctorRegistration() {
-  const { addDoctor, fieldVisibility } = useDoctorStore();
+interface Props {
+  editId?: string | null;
+  onDone?: () => void;
+}
+
+export default function DoctorRegistration({ editId, onDone }: Props) {
+  const { addDoctor, editDoctor, doctors, fieldVisibility } = useDoctorStore();
   const [photoPreview, setPhotoPreview] = useState<string>(
     "https://api.dicebear.com/9.x/avataaars/svg?seed=newdoctor&backgroundColor=b6e3f4"
   );
@@ -51,6 +56,29 @@ export default function DoctorRegistration() {
   const [address, setAddress] = useState("");
   const [consultancyFee, setConsultancyFee] = useState("");
 
+  // Pre-fill form when editing
+  useEffect(() => {
+    if (editId) {
+      const doc = doctors.find((d) => d.id === editId);
+      if (doc) {
+        setName(doc.name);
+        setQualification(doc.qualification);
+        setDegree(doc.degree);
+        setSpecialty(doc.specialty);
+        setExperience(doc.experience);
+        setMobile(doc.mobile);
+        setEmail(doc.email);
+        setHospitalName(doc.hospitalName);
+        setDistrict(doc.district);
+        setState(doc.state);
+        setCountry(doc.country);
+        setAddress(doc.address);
+        setConsultancyFee(String(doc.consultancyFee));
+        setPhotoPreview(doc.photo);
+      }
+    }
+  }, [editId, doctors]);
+
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -69,7 +97,7 @@ export default function DoctorRegistration() {
       return;
     }
 
-    addDoctor({
+    const data = {
       photo: photoPreview,
       name: name.trim(),
       qualification: qualification.trim(),
@@ -84,12 +112,22 @@ export default function DoctorRegistration() {
       country: country.trim(),
       address: address.trim(),
       consultancyFee: Number(consultancyFee) || 0,
-    });
+    };
+
+    if (editId) {
+      editDoctor(editId, data);
+    } else {
+      addDoctor(data);
+    }
 
     setSuccess(true);
     setTimeout(() => {
       setSuccess(false);
-      resetForm();
+      if (editId) {
+        onDone?.();
+      } else {
+        resetForm();
+      }
     }, 2500);
   };
 
@@ -131,8 +169,14 @@ export default function DoctorRegistration() {
         <div className="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center mb-5">
           <CheckCircle2 size={40} className="text-green-600" />
         </div>
-        <h3 className="text-xl font-bold text-gray-900 mb-2">Doctor Registered!</h3>
-        <p className="text-gray-500 text-sm">The doctor has been successfully added to the system.</p>
+        <h3 className="text-xl font-bold text-gray-900 mb-2">
+          {editId ? "Doctor Updated!" : "Doctor Registered!"}
+        </h3>
+        <p className="text-gray-500 text-sm">
+          {editId
+            ? "Doctor information has been updated successfully."
+            : "The doctor has been successfully added to the system."}
+        </p>
       </div>
     );
   }
@@ -142,8 +186,12 @@ export default function DoctorRegistration() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h2 className="text-xl font-bold text-gray-900">Doctor Registration</h2>
-          <p className="text-gray-500 text-sm mt-0.5">Add a new doctor to the system</p>
+          <h2 className="text-xl font-bold text-gray-900">
+            {editId ? "Edit Doctor" : "Doctor Registration"}
+          </h2>
+          <p className="text-gray-500 text-sm mt-0.5">
+            {editId ? "Update doctor information" : "Add a new doctor to the system"}
+          </p>
         </div>
         {hiddenFields.length > 0 && (
           <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-amber-50 border border-amber-200">
@@ -457,6 +505,26 @@ export default function DoctorRegistration() {
 
         {/* Action Buttons */}
         <div className="flex items-center gap-3 pt-2">
+          {editId && (
+            <button
+              type="button"
+              onClick={() => onDone?.()}
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold text-gray-600 bg-white border border-gray-200 hover:bg-gray-50 transition-colors"
+            >
+              <X size={16} />
+              Cancel
+            </button>
+          )}
+          {!editId && (
+            <button
+              type="button"
+              onClick={resetForm}
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold text-gray-600 bg-white border border-gray-200 hover:bg-gray-50 transition-colors"
+            >
+              <X size={16} />
+              Clear
+            </button>
+          )}
           <button
             type="submit"
             disabled={!isFormValid}
@@ -467,15 +535,7 @@ export default function DoctorRegistration() {
             }`}
           >
             <Save size={16} />
-            Register Doctor
-          </button>
-          <button
-            type="button"
-            onClick={resetForm}
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold text-gray-600 bg-white border border-gray-200 hover:bg-gray-50 transition-colors"
-          >
-            <X size={16} />
-            Clear
+            {editId ? "Update Doctor" : "Register Doctor"}
           </button>
         </div>
       </form>
