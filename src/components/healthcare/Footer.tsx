@@ -12,9 +12,11 @@ import {
   CreditCard,
   ShieldCheck,
   FlaskConical,
+  Stethoscope,
 } from "lucide-react";
 import { useAdminStore } from "@/store/admin-store";
 import { useLabStore } from "@/store/lab-store";
+import { useDoctorPortalStore } from "@/store/doctor-portal-store";
 
 const quickLinks = [
   "Home",
@@ -46,6 +48,7 @@ const company = [
 export default function Footer() {
   const { openPanel } = useAdminStore();
   const { openLabPanel } = useLabStore();
+  const { openPanel: openDoctorPanel } = useDoctorPortalStore();
 
   return (
     <footer className="bg-teal-dark text-white" id="contact">
@@ -112,6 +115,16 @@ export default function Footer() {
                 >
                   <FlaskConical size={16} className="text-white/50 group-hover:text-white transition-colors" />
                   <span className="font-medium">Lab Login</span>
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={openDoctorPanel}
+                  className="group flex items-center gap-2 text-white/50 text-sm hover:text-teal-light transition-all duration-300 rounded-lg px-3 py-2 bg-gradient-to-r from-teal/20 to-emerald-500/20 hover:from-teal/30 hover:to-emerald-500/30 border border-teal/30 hover:border-teal/50 shadow-sm hover:shadow-teal/10"
+                  title="Doctor Portal"
+                >
+                  <Stethoscope size={16} className="text-teal-light/70 group-hover:text-teal-light transition-colors" />
+                  <span className="font-medium">Doctor Portal</span>
                 </button>
               </li>
             </ul>
