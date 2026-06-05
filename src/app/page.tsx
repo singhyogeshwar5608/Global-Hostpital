@@ -13,6 +13,7 @@ import Footer from "@/components/healthcare/Footer";
 import AppointmentModal from "@/components/healthcare/AppointmentModal";
 import AdminPanel from "@/components/healthcare/AdminPanel";
 import MedicineShop from "@/components/healthcare/MedicineShop";
+import PackageShop from "@/components/healthcare/PackageShop";
 
 export default function Home() {
   return (
@@ -34,6 +35,7 @@ export default function Home() {
       <AppointmentModal />
       <AdminPanel />
       <MedicineShop />
+      <PackageShop />
     </main>
   );
 }

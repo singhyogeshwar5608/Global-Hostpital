@@ -20,13 +20,13 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useAppointmentStore } from "@/store/appointment-store";
 import { useMedicineStore } from "@/store/medicine-store";
-import { Pill } from "lucide-react";
+import { usePackageStore } from "@/store/package-store";
+import { Pill, Package } from "lucide-react";
 
 const navLinks = [
   { label: "Home", href: "#" },
   { label: "Find Doctors", href: "#services" },
   { label: "Services", href: "#services" },
-  { label: "Packages", href: "#features" },
   { label: "Labs", href: "#features" },
   { label: "About Us", href: "#why-us" },
   { label: "Contact Us", href: "#contact" },
@@ -36,7 +36,8 @@ export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const { openModal } = useAppointmentStore();
-  const { openShop, getCartItemCount, isShopOpen } = useMedicineStore();
+  const { openShop, getCartItemCount } = useMedicineStore();
+  const { openShop: openPackageShop } = usePackageStore();
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 40);
@@ -122,6 +123,13 @@ export default function Header() {
               <Pill size={14} />
               Medicines
             </button>
+            <button
+              onClick={openPackageShop}
+              className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-teal hover:bg-mint rounded-lg transition-colors flex items-center gap-1.5"
+            >
+              <Package size={14} />
+              Packages
+            </button>
           </div>
 
           {/* Right Actions */}
@@ -171,6 +179,12 @@ export default function Header() {
               className="block w-full text-left py-2.5 text-gray-700 hover:text-teal font-medium border-b border-gray-50 flex items-center gap-1.5"
             >
               <Pill size={14} /> Medicines
+            </button>
+            <button
+              onClick={() => { openPackageShop(); setMobileOpen(false); }}
+              className="block w-full text-left py-2.5 text-gray-700 hover:text-teal font-medium border-b border-gray-50 flex items-center gap-1.5"
+            >
+              <Package size={14} /> Packages
             </button>
             <Button
               onClick={() => { openModal(); setMobileOpen(false); }}

@@ -55,6 +55,9 @@ import FieldVisibilitySettings from "./FieldVisibilitySettings";
 import MedicinesList from "./MedicinesList";
 import MedicineRegistration from "./MedicineRegistration";
 import MedicineOrders from "./MedicineOrders";
+import PackagesList from "./PackagesList";
+import PackageRegistration from "./PackageRegistration";
+import PackageBookings from "./PackageBookings";
 
 // ─── Page type ───────────────────────────────────────────────
 type PageKey =
@@ -70,6 +73,8 @@ type PageKey =
   | "medicine-registration"
   | "medicine-orders"
   | "packages"
+  | "package-registration"
+  | "package-bookings"
   | "prescriptions"
   | "lab-reports"
   | "payments"
@@ -164,6 +169,8 @@ export default function AdminDashboard() {
     if (activePage === "field-visibility") return "Field Visibility Settings";
     if (activePage === "medicine-registration") return "Medicine Registration";
     if (activePage === "medicine-orders") return "Medicine Orders";
+    if (activePage === "package-registration") return "Package Registration";
+    if (activePage === "package-bookings") return "Package Bookings";
     return item?.label || "Dashboard";
   };
 
@@ -195,7 +202,9 @@ export default function AdminDashboard() {
               (item.page === "doctors" && activePage === "doctor-registration") ||
               (item.page === "doctors" && activePage === "field-visibility") ||
               (item.page === "medicines" && activePage === "medicine-registration") ||
-              (item.page === "medicines" && activePage === "medicine-orders");
+              (item.page === "medicines" && activePage === "medicine-orders") ||
+              (item.page === "packages" && activePage === "package-registration") ||
+              (item.page === "packages" && activePage === "package-bookings");
             return (
               <button
                 key={item.label}
@@ -360,8 +369,43 @@ export default function AdminDashboard() {
             </div>
           )}
 
+          {/* ─── Packages Pages ─── */}
+          {activePage === "packages" && (
+            <PackagesList
+              onAddPackage={() => setActivePage("package-registration")}
+              onEditPackage={(id) => setActivePage("package-registration")}
+              onViewBookings={() => setActivePage("package-bookings")}
+            />
+          )}
+
+          {activePage === "package-registration" && (
+            <div>
+              <button
+                onClick={() => setActivePage("packages")}
+                className="inline-flex items-center gap-1.5 text-sm text-[#1e3a5f] font-semibold mb-4 hover:underline"
+              >
+                <ChevronDown size={14} className="-rotate-90" />
+                Back to Packages
+              </button>
+              <PackageRegistration onDone={() => setActivePage("packages")} />
+            </div>
+          )}
+
+          {activePage === "package-bookings" && (
+            <div>
+              <button
+                onClick={() => setActivePage("packages")}
+                className="inline-flex items-center gap-1.5 text-sm text-[#1e3a5f] font-semibold mb-4 hover:underline"
+              >
+                <ChevronDown size={14} className="-rotate-90" />
+                Back to Packages
+              </button>
+              <PackageBookings onBack={() => setActivePage("packages")} />
+            </div>
+          )}
+
           {/* Placeholder for other pages */}
-          {!["dashboard", "doctors", "doctor-registration", "field-visibility", "medicines", "medicine-registration", "medicine-orders"].includes(activePage) && (
+          {!["dashboard", "doctors", "doctor-registration", "field-visibility", "medicines", "medicine-registration", "medicine-orders", "packages", "package-registration", "package-bookings"].includes(activePage) && (
             <PlaceholderPage title={getPageLabel()} />
           )}
         </main>
