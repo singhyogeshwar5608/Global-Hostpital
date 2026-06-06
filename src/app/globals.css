@@ -125,3 +125,34 @@
     box-shadow: 0 8px 32px rgba(0, 137, 123, 0.12);
   }
 }
+
+/* Partners Marquee Animation */
+.partners-marquee {
+  animation: partnersScrollLeft 40s linear infinite;
+}
+.partners-marquee:hover {
+  animation-play-state: paused;
+}
+.partners-marquee-reverse {
+  animation: partnersScrollRight 45s linear infinite;
+}
+.partners-marquee-reverse:hover {
+  animation-play-state: paused;
+}
+
+@keyframes partnersScrollLeft {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-33.333%);
+  }
+}
+@keyframes partnersScrollRight {
+  0% {
+    transform: translateX(-33.333%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
