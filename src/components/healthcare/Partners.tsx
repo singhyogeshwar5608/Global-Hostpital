@@ -1,54 +1,28 @@
 "use client";
 
-import React, { useRef, useState, useEffect } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import React from "react";
 
 const partners = [
-  { name: "LabCorp", color: "#1a73e8" },
-  { name: "Quest Diagnostics", color: "#34a853" },
-  { name: "Bio-Rad", color: "#cc0000" },
-  { name: "ThermoFisher Scientific", color: "#0033a0" },
-  { name: "Mayo Clinic", color: "#005ca9" },
-  { name: "Sonic Healthcare", color: "#6b21a8" },
+  { name: "LabCorp", color: "#1a73e8", bg: "#e8f0fe", initial: "LC" },
+  { name: "Quest Diagnostics", color: "#34a853", bg: "#e6f4ea", initial: "QD" },
+  { name: "Bio-Rad", color: "#cc0000", bg: "#fce8e6", initial: "BR" },
+  { name: "ThermoFisher Scientific", color: "#0033a0", bg: "#e8eaef", initial: "TF" },
+  { name: "Mayo Clinic", color: "#005ca9", bg: "#e3eef8", initial: "MC" },
+  { name: "Sonic Healthcare", color: "#6b21a8", bg: "#f3e8fd", initial: "SH" },
+  { name: "CVS Health", color: "#d40000", bg: "#fce4e4", initial: "CV" },
+  { name: "UnitedHealth", color: "#002677", bg: "#e0e7f5", initial: "UH" },
+  { name: "Pfizer", color: "#0082ca", bg: "#e3f2fd", initial: "PF" },
+  { name: "Johnson & Johnson", color: "#d51900", bg: "#fce8e6", initial: "JJ" },
+  { name: "Roche", color: "#0066b3", bg: "#e3f0fa", initial: "RC" },
+  { name: "Abbott Labs", color: "#009cde", bg: "#e3f5fc", initial: "AL" },
 ];
 
 export default function Partners() {
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const [canScrollLeft, setCanScrollLeft] = useState(false);
-  const [canScrollRight, setCanScrollRight] = useState(false);
-
-  const checkScroll = () => {
-    const el = scrollRef.current;
-    if (!el) return;
-    setCanScrollLeft(el.scrollLeft > 2);
-    setCanScrollRight(el.scrollLeft < el.scrollWidth - el.clientWidth - 2);
-  };
-
-  useEffect(() => {
-    checkScroll();
-    const el = scrollRef.current;
-    if (el) {
-      el.addEventListener("scroll", checkScroll, { passive: true });
-      window.addEventListener("resize", checkScroll);
-      return () => {
-        el.removeEventListener("scroll", checkScroll);
-        window.removeEventListener("resize", checkScroll);
-      };
-    }
-  }, []);
-
-  const scroll = (dir: "left" | "right") => {
-    const el = scrollRef.current;
-    if (!el) return;
-    const cardWidth = 160;
-    el.scrollBy({ left: dir === "left" ? -cardWidth : cardWidth, behavior: "smooth" });
-  };
-
   return (
-    <section className="py-8 sm:py-10 lg:py-12 bg-gray-50">
+    <section className="py-8 sm:py-10 lg:py-12 bg-gray-50 overflow-hidden">
       <div className="max-w-[1200px] mx-auto px-4 sm:px-6">
         {/* Header - Left Aligned */}
-        <div className="mb-4 sm:mb-6">
+        <div className="mb-6 sm:mb-8">
           <span className="inline-block text-teal font-semibold text-[10px] sm:text-[11px] tracking-widest uppercase">
             Trusted Partners
           </span>
@@ -56,53 +30,60 @@ export default function Partners() {
             Our Partners
           </h2>
         </div>
+      </div>
 
-        {/* Logo Row with Arrows */}
-        <div className="relative flex items-center">
-          {/* Left Arrow */}
-          <button
-            onClick={() => scroll("left")}
-            className="flex-shrink-0 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white border border-gray-200 flex items-center justify-center text-gray-500 hover:text-teal hover:border-teal/30 hover:shadow-md transition-all mr-2 sm:mr-3"
-            style={{ display: canScrollLeft ? "flex" : "none" }}
-          >
-            <ChevronLeft size={16} />
-          </button>
+      {/* Marquee Row */}
+      <div className="relative">
+        {/* Fade edges */}
+        <div className="absolute left-0 top-0 bottom-0 w-12 sm:w-20 bg-gradient-to-r from-gray-50 to-transparent z-10 pointer-events-none" />
+        <div className="absolute right-0 top-0 bottom-0 w-12 sm:w-20 bg-gradient-to-l from-gray-50 to-transparent z-10 pointer-events-none" />
 
-          {/* Logos Scrollable Row */}
-          <div
-            ref={scrollRef}
-            className="flex gap-3 sm:gap-5 overflow-x-auto scroll-smooth flex-1"
-            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-          >
-            {partners.map((partner, i) => (
+        {/* Scrolling container */}
+        <div className="flex animate-marquee">
+          {/* Duplicate the list for seamless loop */}
+          {[...partners, ...partners].map((partner, i) => (
+            <div
+              key={`partner-${i}`}
+              className="flex-shrink-0 mx-2.5 sm:mx-4 flex flex-col items-center justify-center w-28 sm:w-36 py-4 sm:py-5"
+            >
+              {/* Circle Logo Card */}
               <div
-                key={`${partner.name}-${i}`}
-                className="flex-shrink-0 w-32 sm:w-44 h-16 sm:h-20 bg-white flex items-center justify-center cursor-pointer"
+                className="w-14 h-14 sm:w-16 sm:h-16 rounded-full flex items-center justify-center mb-2.5 shadow-sm border border-white/60 transition-transform duration-300 hover:scale-110"
+                style={{ backgroundColor: partner.bg }}
               >
                 <span
-                  className="text-xs sm:text-sm font-medium tracking-wide text-center leading-tight"
+                  className="text-sm sm:text-base font-bold"
                   style={{ color: partner.color }}
                 >
-                  {partner.name}
+                  {partner.initial}
                 </span>
               </div>
-            ))}
-          </div>
-
-          {/* Right Arrow */}
-          <button
-            onClick={() => scroll("right")}
-            className="flex-shrink-0 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white border border-gray-200 flex items-center justify-center text-gray-500 hover:text-teal hover:border-teal/30 hover:shadow-md transition-all ml-2 sm:ml-3"
-            style={{ display: canScrollRight ? "flex" : "none" }}
-          >
-            <ChevronRight size={16} />
-          </button>
+              {/* Name */}
+              <span
+                className="text-[10px] sm:text-xs font-semibold text-center leading-tight"
+                style={{ color: partner.color }}
+              >
+                {partner.name}
+              </span>
+            </div>
+          ))}
         </div>
       </div>
 
       <style jsx>{`
-        div::-webkit-scrollbar {
-          display: none;
+        @keyframes marquee {
+          0% {
+            transform: translateX(0);
+          }
+          100% {
+            transform: translateX(-50%);
+          }
+        }
+        .animate-marquee {
+          animation: marquee 30s linear infinite;
+        }
+        .animate-marquee:hover {
+          animation-play-state: paused;
         }
       `}</style>
     </section>
