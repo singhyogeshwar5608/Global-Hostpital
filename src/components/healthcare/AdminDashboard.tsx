@@ -34,6 +34,7 @@ import {
   Eye,
   EyeOff,
   ShieldCheck,
+  Video,
 } from "lucide-react";
 import {
   LineChart,
@@ -76,6 +77,10 @@ import DoctorPatientAccess from "./DoctorPatientAccess";
 import DoctorAuditLogs from "./DoctorAuditLogs";
 import SuperAdminDoctorMonitoring from "./SuperAdminDoctorMonitoring";
 import DoctorPortal from "./DoctorPortal";
+import ServicesManager from "./ServicesManager";
+import VideoReelsManager from "./VideoReelsManager";
+import SpecialtyManagement from "./SpecialtyManagement";
+import QuestionnaireManager from "./QuestionnaireManager";
 import { usePatientStore } from "@/store/patient-store";
 
 // ─── Page type ───────────────────────────────────────────────
@@ -116,7 +121,11 @@ type PageKey =
   | "countries"
   | "currencies"
   | "notifications"
-  | "activity-logs";
+  | "activity-logs"
+  | "services"
+  | "reels"
+  | "specialties"
+  | "referrals";
 
 // ─── Data ────────────────────────────────────────────────────
 const sidebarItems: {
@@ -140,6 +149,10 @@ const sidebarItems: {
   { icon: Globe2, label: "Countries", page: "countries" },
   { icon: Coins, label: "Currencies", page: "currencies" },
   { icon: Bell, label: "Notifications", page: "notifications" },
+  { icon: ClipboardList, label: "Services", page: "services" },
+  { icon: Video, label: "Video Reels", page: "reels" },
+  { icon: ClipboardList, label: "Questionnaire", page: "specialties" },
+  { icon: Activity, label: "Referrals", page: "referrals" },
 ];
 
 const appointmentData = [
@@ -217,6 +230,7 @@ export default function AdminDashboard() {
     if (activePage === "lab-registration") return "Lab Registration";
     if (activePage === "appointment-slots") return "Doctor Slot Management";
     if (activePage === "hospital-registration") return "Hospital Registration";
+    if (activePage === "specialties") return "Questionnaire Management";
     return item?.label || "Dashboard";
   };
 
@@ -359,6 +373,8 @@ export default function AdminDashboard() {
 
           {/* ─── Page Router ─── */}
           {activePage === "dashboard" && <DashboardPage />}
+
+          {activePage === "referrals" && <ReferralsPage />}
 
           {/* ─── Patients Pages ─── */}
           {activePage === "patients" && (
@@ -639,8 +655,17 @@ export default function AdminDashboard() {
             </div>
           )}
 
+          {/* ─── Services Page ─── */}
+          {activePage === "services" && <ServicesManager />}
+
+          {/* ─── Video Reels Page ─── */}
+          {activePage === "reels" && <VideoReelsManager />}
+
+          {/* ─── Questionnaire / Specialties Page ─── */}
+          {activePage === "specialties" && <QuestionnaireManager />}
+
           {/* Placeholder for other pages */}
-          {!["dashboard", "doctors", "doctor-registration", "doctor-schedule", "doctor-permissions", "doctor-profile-visibility", "doctor-patient-access", "doctor-portal", "doctor-monitoring", "doctor-audit-logs", "field-visibility", "patients", "patient-registration", "patient-reports", "patient-bookings", "appointments", "appointment-slots", "hospitals", "hospital-registration", "medicines", "medicine-registration", "medicine-orders", "packages", "package-registration", "package-bookings", "labs", "lab-registration"].includes(activePage) && (
+          {!["dashboard", "doctors", "doctor-registration", "doctor-schedule", "doctor-permissions", "doctor-profile-visibility", "doctor-patient-access", "doctor-portal", "doctor-monitoring", "doctor-audit-logs", "field-visibility", "patients", "patient-registration", "patient-reports", "patient-bookings", "appointments", "appointment-slots", "hospitals", "hospital-registration", "medicines", "medicine-registration", "medicine-orders", "packages", "package-registration", "package-bookings", "labs", "lab-registration", "services", "reels", "specialties"].includes(activePage) && (
             <PlaceholderPage title={getPageLabel()} />
           )}
         </main>
@@ -854,6 +879,95 @@ function PlaceholderPage({ title }: { title: string }) {
       </div>
       <h3 className="text-xl font-bold text-gray-900 mb-2">{title}</h3>
       <p className="text-gray-500 text-sm">This module is coming soon.</p>
+    </div>
+  );
+}
+
+// ─── Referrals Page ─────────────────────────────────────────
+function ReferralsPage() {
+  const { labReferrals, pharmacyReferrals, patients, updateLabReferralStatus, updatePharmacyReferralStatus } = usePatientStore();
+  const [filter, setFilter] = useState<string>("all");
+
+  const counts = {
+    all: labReferrals.length + pharmacyReferrals.length,
+    pending: labReferrals.filter((r) => r.status === "pending").length + pharmacyReferrals.filter((r) => r.status === "pending").length,
+    completed: labReferrals.filter((r) => r.status === "completed").length + pharmacyReferrals.filter((r) => r.status === "completed").length,
+    in_progress: labReferrals.filter((r) => r.status === "in_progress" || r.status === "accepted").length + pharmacyReferrals.filter((r) => r.status === "in_progress" || r.status === "accepted").length,
+  };
+
+  const filters = [
+    { key: "all", label: `All (${counts.all})` },
+    { key: "pending", label: `Pending (${counts.pending})` },
+    { key: "in_progress", label: `In Progress (${counts.in_progress})` },
+    { key: "completed", label: `Completed (${counts.completed})` },
+  ];
+
+  const statusBadge = (status: string) => {
+    const m: Record<string, string> = { pending: "bg-yellow-100 text-yellow-700", accepted: "bg-blue-100 text-blue-700", in_progress: "bg-purple-100 text-purple-700", completed: "bg-green-100 text-green-700", cancelled: "bg-red-100 text-red-700" };
+    return <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${m[status] || m.pending}`}>{status.replace(/_/g, " ")}</span>;
+  };
+
+  const allReferrals = [
+    ...labReferrals.map((r) => ({ ...r, type: "Lab" as const })),
+    ...pharmacyReferrals.map((r) => ({ ...r, type: "Pharmacy" as const })),
+  ].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+
+  const filtered = filter === "all" ? allReferrals : allReferrals.filter((r) => {
+    if (filter === "in_progress") return r.status === "in_progress" || r.status === "accepted";
+    return r.status === filter;
+  });
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-5">
+        <h2 className="text-lg font-bold text-gray-900">Referrals Management</h2>
+        <div className="flex items-center gap-2 text-sm text-gray-500">
+          <span>Total: <strong className="text-gray-900">{counts.all}</strong></span>
+        </div>
+      </div>
+
+      <div className="flex items-center gap-1 mb-5 overflow-x-auto pb-1">
+        {filters.map((f) => (
+          <button key={f.key} onClick={() => setFilter(f.key)} className={`whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${filter === f.key ? "bg-[#1e3a5f] text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`}>{f.label}</button>
+        ))}
+      </div>
+
+      {filtered.length === 0 ? (
+        <div className="bg-white rounded-xl border border-gray-200 p-10 text-center">
+          <Activity size={40} className="mx-auto text-gray-300 mb-3" />
+          <p className="text-gray-500 text-sm">No referrals found</p>
+        </div>
+      ) : (
+        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+          <table className="w-full text-sm">
+            <thead><tr className="bg-gray-50 border-b border-gray-100">
+              <th className="text-left px-4 py-3 font-semibold text-gray-600 text-xs uppercase">Type</th>
+              <th className="text-left px-4 py-3 font-semibold text-gray-600 text-xs uppercase">Patient</th>
+              <th className="text-left px-4 py-3 font-semibold text-gray-600 text-xs uppercase">Doctor</th>
+              <th className="text-left px-4 py-3 font-semibold text-gray-600 text-xs uppercase">Target</th>
+              <th className="text-left px-4 py-3 font-semibold text-gray-600 text-xs uppercase">Date</th>
+              <th className="text-center px-4 py-3 font-semibold text-gray-600 text-xs uppercase">Status</th>
+              <th className="text-right px-4 py-3 font-semibold text-gray-600 text-xs uppercase">Action</th>
+            </tr></thead>
+            <tbody className="divide-y divide-gray-50">
+              {filtered.map((r) => (
+                <tr key={r.id} className="hover:bg-gray-50">
+                  <td className="px-4 py-3"><span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${r.type === "Lab" ? "bg-teal-100 text-teal-700" : "bg-green-100 text-green-700"}`}>{r.type}</span></td>
+                  <td className="px-4 py-3"><span className="font-medium text-gray-900">{r.patientName}</span></td>
+                  <td className="px-4 py-3 text-gray-500">Dr. {r.doctorName}</td>
+                  <td className="px-4 py-3 text-gray-600">{"labName" in r ? (r as any).labName : (r as any).medicineNames?.slice(0, 2).join(", ")}</td>
+                  <td className="px-4 py-3 text-xs text-gray-400">{new Date(r.createdAt).toLocaleDateString()}</td>
+                  <td className="px-4 py-3 text-center">{statusBadge(r.status)}</td>
+                  <td className="px-4 py-3 text-right">
+                    {r.status === "pending" && r.type === "Lab" && <button onClick={() => updateLabReferralStatus(r.id, "cancelled")} className="text-[10px] font-semibold text-red-600 hover:text-red-800">Cancel</button>}
+                    {r.status === "pending" && r.type === "Pharmacy" && <button onClick={() => updatePharmacyReferralStatus(r.id, "cancelled")} className="text-[10px] font-semibold text-red-600 hover:text-red-800">Cancel</button>}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 }

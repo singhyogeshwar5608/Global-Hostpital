@@ -163,6 +163,40 @@ const sampleLabs: Lab[] = [
   },
 ];
 
+// ─── Lab Test Catalog ─────────────────────────────────────────
+export interface LabTest { id: string; name: string; category: string; }
+export const testCatalog: LabTest[] = [
+  { id: "T-01", name: "Complete Blood Count (CBC)", category: "Hematology" },
+  { id: "T-02", name: "Liver Function Test (LFT)", category: "Biochemistry" },
+  { id: "T-03", name: "Kidney Function Test (KFT)", category: "Biochemistry" },
+  { id: "T-04", name: "Lipid Profile", category: "Biochemistry" },
+  { id: "T-05", name: "Thyroid Profile (T3, T4, TSH)", category: "Endocrinology" },
+  { id: "T-06", name: "Vitamin D (25-OH)", category: "Endocrinology" },
+  { id: "T-07", name: "Vitamin B12", category: "Endocrinology" },
+  { id: "T-08", name: "Blood Sugar Fasting", category: "Biochemistry" },
+  { id: "T-09", name: "Blood Sugar PP", category: "Biochemistry" },
+  { id: "T-10", name: "HbA1c", category: "Biochemistry" },
+  { id: "T-11", name: "C-Reactive Protein (CRP)", category: "Immunology" },
+  { id: "T-12", name: "ESR", category: "Hematology" },
+  { id: "T-13", name: "Urine Routine & Microscopy", category: "Urinalysis" },
+  { id: "T-14", name: "Urine Culture & Sensitivity", category: "Microbiology" },
+  { id: "T-15", name: "Dengue NS1 Antigen", category: "Microbiology" },
+  { id: "T-16", name: "Malaria Antigen", category: "Microbiology" },
+  { id: "T-17", name: "COVID-19 RT-PCR", category: "Microbiology" },
+  { id: "T-18", name: "ECG (Electrocardiogram)", category: "Cardiology" },
+  { id: "T-19", name: "X-Ray", category: "Radiology" },
+  { id: "T-20", name: "Ultrasound", category: "Radiology" },
+  { id: "T-21", name: "MRI Scan", category: "Radiology" },
+  { id: "T-22", name: "CT Scan", category: "Radiology" },
+];
+
+// Which labs can perform which tests (labId → testId[])
+export const labTestAvailability: Record<string, string[]> = {
+  "LAB-1001": ["T-01","T-02","T-03","T-04","T-05","T-06","T-07","T-08","T-09","T-10","T-11","T-12","T-13","T-14","T-15","T-16","T-17"],
+  "LAB-1002": ["T-01","T-02","T-03","T-04","T-05","T-06","T-07","T-08","T-09","T-10","T-11","T-12","T-13","T-18","T-19"],
+  "LAB-1003": ["T-18","T-19","T-20","T-21","T-22","T-01","T-02","T-03","T-04"],
+};
+
 // ─── Store ───────────────────────────────────────────────────
 export const useLabStore = create<LabState>((set, get) => ({
   labs: sampleLabs,

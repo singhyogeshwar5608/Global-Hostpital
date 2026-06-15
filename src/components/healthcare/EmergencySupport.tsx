@@ -1,12 +1,19 @@
 "use client";
 
 import React from "react";
+import { motion } from "framer-motion";
 import { Phone, Ambulance } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default function EmergencySupport() {
   return (
-    <section className="py-20 lg:py-28 bg-white">
+    <motion.section
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-80px" }}
+      transition={{ duration: 0.6 }}
+      className="py-20 lg:py-28 bg-white"
+    >
       <div className="max-w-[1440px] mx-auto px-6">
         <div className="gradient-dark-green rounded-3xl overflow-hidden relative">
           {/* Decorative circles */}
@@ -57,6 +64,6 @@ export default function EmergencySupport() {
           </div>
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 }

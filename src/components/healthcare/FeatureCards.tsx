@@ -1,8 +1,9 @@
 "use client";
 
 import React, { useRef, useState, useEffect } from "react";
+import { motion } from "framer-motion";
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
-import { useAppointmentStore } from "@/store/appointment-store";
+import { usePageContext } from "@/App";
 
 const cards = [
   {
@@ -48,7 +49,7 @@ const cards = [
 ];
 
 export default function FeatureCards() {
-  const { openModal } = useAppointmentStore();
+  const { setShowRegistrationPage } = usePageContext();
   const scrollRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
@@ -81,7 +82,14 @@ export default function FeatureCards() {
   };
 
   return (
-    <section className="py-10 sm:py-16 lg:py-20 bg-mint-light" id="features">
+    <motion.section
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-80px" }}
+      transition={{ duration: 0.6 }}
+      className="py-0 bg-mint-light"
+      id="features"
+    >
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6">
         {/* Header */}
         <div className="text-center max-w-2xl mx-auto mb-8 sm:mb-12">
@@ -126,7 +134,7 @@ export default function FeatureCards() {
               <div
                 key={card.title}
                 data-card
-                onClick={card.isBooking ? openModal : undefined}
+                onClick={card.isBooking ? () => setShowRegistrationPage(true) : undefined}
                 className={`
                   group flex-shrink-0 w-[220px] sm:w-[240px] lg:w-auto lg:flex-1
                   bg-white border border-gray-100 ${card.borderColor}
@@ -182,7 +190,7 @@ export default function FeatureCards() {
         </div>
       </div>
 
-      <style jsx>{`
+      <style>{`
         .scrollbar-hide::-webkit-scrollbar {
           display: none;
         }
@@ -191,6 +199,6 @@ export default function FeatureCards() {
           scrollbar-width: none;
         }
       `}</style>
-    </section>
+    </motion.section>
   );
 }

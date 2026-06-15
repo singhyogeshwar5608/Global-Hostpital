@@ -35,6 +35,24 @@ export interface MedicineOrder {
   updatedAt: string;
 }
 
+export interface MedicalStore {
+  id: string;
+  name: string;
+  ownerName: string;
+  address: string;
+  city: string;
+  state: string;
+  pinCode: string;
+  district: string;
+  phone: string;
+  email: string;
+  rating: number;
+  licenseNumber: string;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
 interface MedicineState {
   medicines: Medicine[];
   addMedicine: (medicine: Omit<Medicine, "id" | "createdAt" | "updatedAt">) => void;
@@ -56,6 +74,11 @@ interface MedicineState {
   placeOrder: (order: Omit<MedicineOrder, "id" | "createdAt" | "updatedAt">) => MedicineOrder;
   updateOrderStatus: (id: string, status: MedicineOrder["orderStatus"]) => void;
   updatePaymentStatus: (id: string, status: MedicineOrder["paymentStatus"]) => void;
+
+  // Medical Stores
+  medicalStores: MedicalStore[];
+  addMedicalStore: (data: Omit<MedicalStore, "id" | "createdAt" | "updatedAt">) => void;
+  updateMedicalStore: (id: string, data: Partial<MedicalStore>) => void;
 
   // Shop UI
   isShopOpen: boolean;
@@ -227,6 +250,14 @@ const sampleOrders: MedicineOrder[] = [
   },
 ];
 
+// ─── Sample Medical Stores ───────────────────────────────────
+const sampleMedicalStores: MedicalStore[] = [
+  { id: "MS-001", name: "City Pharmacy & Medical Store", ownerName: "Rajesh Kumar", address: "12, MG Road, Sector 5", city: "Mumbai", state: "Maharashtra", pinCode: "400001", district: "Mumbai City", phone: "+91 98765-43210", email: "citypharma@example.com", rating: 4.5, licenseNumber: "DL-22-MH-001", isActive: true, createdAt: "2024-01-15T00:00:00Z", updatedAt: "2024-06-01T00:00:00Z" },
+  { id: "MS-002", name: "HealWell Pharmacy", ownerName: "Priya Sharma", address: "45, LBS Marg, Near Station", city: "Mumbai", state: "Maharashtra", pinCode: "400002", district: "Mumbai Suburban", phone: "+91 98765-43211", email: "healwell@example.com", rating: 4.2, licenseNumber: "DL-22-MH-002", isActive: true, createdAt: "2024-02-20T00:00:00Z", updatedAt: "2024-06-01T00:00:00Z" },
+  { id: "MS-003", name: "MediCare Drug Store", ownerName: "Amit Patel", address: "78, Park Street", city: "Delhi", state: "Delhi", pinCode: "110001", district: "Central Delhi", phone: "+91 98765-43212", email: "medicare@example.com", rating: 4.7, licenseNumber: "DL-22-DL-001", isActive: true, createdAt: "2024-03-10T00:00:00Z", updatedAt: "2024-06-01T00:00:00Z" },
+  { id: "MS-004", name: "Wellness Pharmacy", ownerName: "Neha Gupta", address: "23, Brigade Road", city: "Bangalore", state: "Karnataka", pinCode: "560001", district: "Bangalore Urban", phone: "+91 98765-43213", email: "wellness@example.com", rating: 4.0, licenseNumber: "DL-22-KA-001", isActive: true, createdAt: "2024-04-05T00:00:00Z", updatedAt: "2024-06-01T00:00:00Z" },
+];
+
 // ─── Store ───────────────────────────────────────────────────
 export const useMedicineStore = create<MedicineState>((set, get) => ({
   medicines: sampleMedicines,
@@ -348,6 +379,16 @@ export const useMedicineStore = create<MedicineState>((set, get) => ({
         o.id === id ? { ...o, paymentStatus: status, updatedAt: new Date().toISOString() } : o
       ),
     }));
+  },
+
+  // ─── Medical Stores ─────────────────────────────────────
+  medicalStores: sampleMedicalStores,
+  addMedicalStore: (data) => {
+    const store: MedicalStore = { ...data, id: `MS-${Date.now().toString(36).toUpperCase()}`, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() };
+    set((s) => ({ medicalStores: [...s.medicalStores, store] }));
+  },
+  updateMedicalStore: (id, data) => {
+    set((s) => ({ medicalStores: s.medicalStores.map((st) => st.id === id ? { ...st, ...data, updatedAt: new Date().toISOString() } : st) }));
   },
 
   // ─── Shop UI ────────────────────────────────────────────

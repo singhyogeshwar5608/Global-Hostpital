@@ -128,7 +128,7 @@
 
 /* Partners Marquee Animation */
 .partners-marquee {
-  animation: partnersScrollLeft 40s linear infinite;
+  animation: partnersScrollLeft 20s linear infinite;
 }
 .partners-marquee:hover {
   animation-play-state: paused;

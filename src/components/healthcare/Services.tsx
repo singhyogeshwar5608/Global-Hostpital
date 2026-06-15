@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useRef, useState, useEffect } from "react";
+import { motion } from "framer-motion";
 import {
   UserSearch,
   CalendarPlus,
@@ -12,7 +13,7 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
-import { useAppointmentStore } from "@/store/appointment-store";
+import { usePageContext } from "@/App";
 
 const services = [
   {
@@ -84,7 +85,7 @@ const services = [
 ];
 
 export default function Services() {
-  const { openModal } = useAppointmentStore();
+  const { setShowRegistrationPage } = usePageContext();
   const scrollRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
@@ -117,7 +118,14 @@ export default function Services() {
   };
 
   return (
-    <section className="py-10 sm:py-16 lg:py-20 bg-white" id="services">
+    <motion.section
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-80px" }}
+      transition={{ duration: 0.6 }}
+      className="py-10 sm:py-16 lg:py-20 bg-white"
+      id="services"
+    >
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6">
         {/* Section Header */}
         <div className="text-center max-w-2xl mx-auto mb-8 sm:mb-12">
@@ -163,7 +171,7 @@ export default function Services() {
               <div
                 key={service.title}
                 data-card
-                onClick={service.action === "booking" ? openModal : undefined}
+                onClick={service.action === "booking" ? () => setShowRegistrationPage(true) : undefined}
                 className={`
                   group flex-shrink-0 w-[160px] sm:w-[200px] lg:w-auto lg:flex-1
                   bg-white border border-gray-100 ${service.borderColor}
@@ -215,7 +223,7 @@ export default function Services() {
         </div>
       </div>
 
-      <style jsx>{`
+      <style>{`
         .scrollbar-hide::-webkit-scrollbar {
           display: none;
         }
@@ -224,6 +232,6 @@ export default function Services() {
           scrollbar-width: none;
         }
       `}</style>
-    </section>
+    </motion.section>
   );
 }

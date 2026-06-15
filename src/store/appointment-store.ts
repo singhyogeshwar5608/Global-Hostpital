@@ -34,26 +34,45 @@ export interface BookedSlot {
 }
 
 export type AppointmentStep =
-  | "specialty"
-  | "doctor"
+  | "option"
+  | "details"
+  | "medical"
+  | "questionnaire"
+  | "reports"
   | "schedule"
-  | "patient-info"
   | "payment"
   | "confirmation";
 
 // ─── Data ────────────────────────────────────────────────────
 export const specialties = [
+  "LFT",
+  "KFT",
+  "Diabetes",
+  "Thyroid",
   "Cardiology",
+  "Gastroenterology",
+  "Orthopedic",
   "Neurology",
-  "Orthopedics",
-  "Dermatology",
-  "Pediatrics",
-  "Gynecology",
-  "Ophthalmology",
-  "ENT",
-  "Psychiatry",
-  "General Medicine",
+  "Oncology",
+  "Pulmonology",
+  "General Consultation",
+  "Other",
 ];
+
+export const specialtyQuestions: Record<string, string[]> = {
+  LFT: ["Jaundice (yellow eyes/skin)", "Dark urine", "Abdominal pain", "Nausea/Vomiting", "Loss of appetite", "Fatigue", "Swelling in legs"],
+  KFT: ["Swelling in feet/legs", "Frequent urination", "Blood in urine", "Back pain", "High blood pressure", "Fatigue", "Difficulty sleeping"],
+  Diabetes: ["Excessive thirst", "Frequent urination", "Unexplained weight loss", "Blurred vision", "Slow healing wounds", "Numbness in feet", "Extreme hunger"],
+  Thyroid: ["Weight changes", "Fatigue", "Hair loss", "Mood swings", "Sensitivity to cold/heat", "Rapid heartbeat", "Dry skin"],
+  Cardiology: ["Chest pain", "Shortness of breath", "Heart palpitations", "Dizziness", "Swelling in ankles", "High blood pressure", "Irregular heartbeat"],
+  Gastroenterology: ["Abdominal pain", "Bloating", "Acid reflux", "Constipation", "Diarrhea", "Nausea", "Blood in stool"],
+  Orthopedic: ["Joint pain", "Back pain", "Swelling in joints", "Limited range of motion", "Muscle weakness", "Neck pain", "Knee pain"],
+  Neurology: ["Headaches/Migraines", "Dizziness", "Numbness/Tingling", "Memory issues", "Seizures", "Tremors", "Difficulty speaking"],
+  Oncology: ["Unexplained weight loss", "Persistent fatigue", "Lumps or swelling", "Persistent cough", "Changes in bowel habits", "Unexplained pain", "Night sweats"],
+  Pulmonology: ["Persistent cough", "Shortness of breath", "Wheezing", "Chest tightness", "Frequent colds", "Snoring", "Coughing up mucus"],
+  "General Consultation": ["Fever", "Headache", "Body ache", "Cold/Cough", "Sore throat", "Fatigue", "General weakness"],
+  Other: ["Fever", "Pain", "Fatigue", "Weight changes", "Skin issues", "Sleep problems", "Other symptoms"],
+};
 
 export const dayLabels = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
@@ -299,7 +318,7 @@ export const doctors = [
   {
     id: "DOC-1003",
     name: "Dr. Emily Williams",
-    specialty: "Dermatology",
+    specialty: "Gastroenterology",
     image: "https://api.dicebear.com/9.x/avataaars/svg?seed=emily&backgroundColor=ffd5dc",
     rating: 4.7,
     experience: "10 years",
@@ -310,7 +329,7 @@ export const doctors = [
   {
     id: "DOC-1004",
     name: "Dr. James Rodriguez",
-    specialty: "Orthopedics",
+    specialty: "Orthopedic",
     image: "https://api.dicebear.com/9.x/avataaars/svg?seed=james&backgroundColor=d1d4f9",
     rating: 4.9,
     experience: "18 years",
@@ -321,7 +340,7 @@ export const doctors = [
   {
     id: "DOC-1005",
     name: "Dr. Priya Sharma",
-    specialty: "Pediatrics",
+    specialty: "Oncology",
     image: "https://api.dicebear.com/9.x/avataaars/svg?seed=priya&backgroundColor=ffeaa7",
     rating: 4.8,
     experience: "14 years",
@@ -332,7 +351,7 @@ export const doctors = [
   {
     id: "DOC-1006",
     name: "Dr. Lisa Park",
-    specialty: "Gynecology",
+    specialty: "Pulmonology",
     image: "https://api.dicebear.com/9.x/avataaars/svg?seed=lisa&backgroundColor=ffdfba",
     rating: 4.9,
     experience: "16 years",
@@ -343,7 +362,7 @@ export const doctors = [
   {
     id: "DOC-1007",
     name: "Dr. Robert Kim",
-    specialty: "General Medicine",
+    specialty: "General Consultation",
     image: "https://api.dicebear.com/9.x/avataaars/svg?seed=robert&backgroundColor=b6e3f4",
     rating: 4.6,
     experience: "8 years",
@@ -354,7 +373,7 @@ export const doctors = [
   {
     id: "DOC-1008",
     name: "Dr. Anna Martinez",
-    specialty: "Psychiatry",
+    specialty: "Diabetes",
     image: "https://api.dicebear.com/9.x/avataaars/svg?seed=anna&backgroundColor=c0aede",
     rating: 4.7,
     experience: "11 years",
@@ -366,7 +385,7 @@ export const doctors = [
 
 const initialState = {
   isOpen: false,
-  currentStep: "specialty" as AppointmentStep,
+  currentStep: "option" as AppointmentStep,
   selectedSpecialty: "",
   selectedDoctor: null as typeof doctors[0] | null,
   selectedDate: undefined as Date | undefined,
@@ -374,10 +393,20 @@ const initialState = {
   patientName: "",
   patientEmail: "",
   patientPhone: "",
+  patientAddress: "",
+  patientCountry: "",
+  patientGender: "male" as "male" | "female" | "other",
+  patientDob: "",
+  patientBloodGroup: "O+",
+  patientReports: null as File | null,
+  uploadedReports: [] as string[],
   patientReason: "",
+  generatedPatientId: "",
   paymentMethod: "card" as const,
   isProcessing: false,
   currentBooking: null as BookedSlot | null,
+  registrationOption: "" as "consult" | "submit" | "",
+  questionnaireAnswers: {} as Record<string, string[]>,
 };
 
 interface AppointmentState {
@@ -404,12 +433,36 @@ interface AppointmentState {
   setPatientEmail: (e: string) => void;
   patientPhone: string;
   setPatientPhone: (p: string) => void;
+  patientAddress: string;
+  setPatientAddress: (a: string) => void;
+  patientCountry: string;
+  setPatientCountry: (c: string) => void;
+  patientGender: "male" | "female" | "other";
+  setPatientGender: (g: "male" | "female" | "other") => void;
+  patientDob: string;
+  setPatientDob: (d: string) => void;
+  patientBloodGroup: string;
+  setPatientBloodGroup: (bg: string) => void;
+  patientReports: File | null;
+  setPatientReports: (f: File | null) => void;
+  uploadedReports: string[];
+  setUploadedReports: (reports: string[]) => void;
+  addUploadedReport: (name: string) => void;
+  removeUploadedReport: (name: string) => void;
   patientReason: string;
   setPatientReason: (r: string) => void;
+  generatedPatientId: string;
+  setGeneratedPatientId: (id: string) => void;
 
   paymentMethod: "card" | "upi" | "insurance";
   setPaymentMethod: (m: "card" | "upi" | "insurance") => void;
   isProcessing: boolean;
+
+  registrationOption: "consult" | "submit" | "";
+  setRegistrationOption: (o: "consult" | "submit") => void;
+  questionnaireAnswers: Record<string, string[]>;
+  toggleQuestionnaireAnswer: (question: string, option: string) => void;
+  resetQuestionnaireAnswers: () => void;
 
   // ─── Admin Booking Management ──────────────────────────
   bookedSlots: BookedSlot[];
@@ -434,6 +487,7 @@ interface AppointmentState {
   // ─── Public Booking Action ─────────────────────────────
   bookAppointment: () => void;
   reset: () => void;
+  setState: (partial: Partial<AppointmentState>) => void;
 }
 
 export const useAppointmentStore = create<AppointmentState>((set, get) => ({
@@ -441,7 +495,7 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
 
   // ─── Public Modal Actions ──────────────────────────────
   openModal: () => set({ isOpen: true }),
-  closeModal: () => set({ isOpen: false, ...initialState, bookedSlots: get().bookedSlots }),
+  closeModal: () => set({ ...initialState, isOpen: false, bookedSlots: get().bookedSlots }),
   setStep: (step) => set({ currentStep: step }),
 
   setSelectedSpecialty: (s) => set({ selectedSpecialty: s, selectedDoctor: null, selectedDate: undefined, selectedTime: "" }),
@@ -452,8 +506,30 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
   setPatientName: (n) => set({ patientName: n }),
   setPatientEmail: (e) => set({ patientEmail: e }),
   setPatientPhone: (p) => set({ patientPhone: p }),
+  setPatientAddress: (a) => set({ patientAddress: a }),
+  setPatientCountry: (c) => set({ patientCountry: c }),
+  setPatientGender: (g) => set({ patientGender: g }),
+  setPatientDob: (d) => set({ patientDob: d }),
+  setPatientBloodGroup: (bg) => set({ patientBloodGroup: bg }),
+  setPatientReports: (f) => set({ patientReports: f }),
+  setUploadedReports: (reports) => set({ uploadedReports: reports }),
+  addUploadedReport: (name) => set((state) => ({ uploadedReports: [...state.uploadedReports, name] })),
+  removeUploadedReport: (name) => set((state) => ({ uploadedReports: state.uploadedReports.filter((r) => r !== name) })),
   setPatientReason: (r) => set({ patientReason: r }),
+  setGeneratedPatientId: (id) => set({ generatedPatientId: id }),
   setPaymentMethod: (m) => set({ paymentMethod: m }),
+  setRegistrationOption: (o) => set({ registrationOption: o }),
+  toggleQuestionnaireAnswer: (question, option) => set((state) => {
+    const current = state.questionnaireAnswers[question] || [];
+    const exists = current.includes(option);
+    return {
+      questionnaireAnswers: {
+        ...state.questionnaireAnswers,
+        [question]: exists ? current.filter((o) => o !== option) : [...current, option],
+      },
+    };
+  }),
+  resetQuestionnaireAnswers: () => set({ questionnaireAnswers: {} }),
 
   // ─── Admin Booking Management ──────────────────────────
   bookedSlots: sampleBookings,
@@ -646,4 +722,5 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
   },
 
   reset: () => set({ ...initialState, bookedSlots: get().bookedSlots }),
+  setState: (partial) => set(partial as Partial<AppointmentState>),
 }));

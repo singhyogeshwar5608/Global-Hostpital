@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { motion } from "framer-motion";
 import {
   ShieldCheck,
   Award,
@@ -51,7 +52,14 @@ export default function CombinedSection() {
   const prevTestimonial = () => setCurrentTestimonial((p) => (p - 1 + testimonials.length) % testimonials.length);
 
   return (
-    <section className="py-8 sm:py-14 lg:py-20 bg-gray-50" id="why-us">
+    <motion.section
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-80px" }}
+      transition={{ duration: 0.6 }}
+      className="py-8 sm:py-14 lg:py-20 bg-gray-50"
+      id="why-us"
+    >
       <div className="max-w-[1320px] mx-auto px-4 sm:px-5">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
 
@@ -237,6 +245,6 @@ export default function CombinedSection() {
 
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 }

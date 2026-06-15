@@ -1,129 +1,61 @@
 "use client";
 
-import React from "react";
-import {
-  Stethoscope,
-  ShieldCheck,
-  Headphones,
-  CalendarCheck,
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useAppointmentStore } from "@/store/appointment-store";
+import { useRef } from "react";
+import { motion, useInView } from "framer-motion";
 
-const features = [
-  { icon: Stethoscope, label: "Expert Doctors" },
-  { icon: ShieldCheck, label: "Secure & Private" },
-  { icon: Headphones, label: "24/7 Support" },
-  { icon: CalendarCheck, label: "Easy Booking" },
+const crossIcons = [
+  { top: "12%", right: "18%", size: 20, opacity: 0.08 },
+  { bottom: "30%", left: "8%", size: 16, opacity: 0.06 },
+  { top: "55%", right: "10%", size: 14, opacity: 0.05 },
+  { bottom: "18%", right: "35%", size: 12, opacity: 0.04 },
+  { top: "25%", left: "50%", size: 10, opacity: 0.04 },
 ];
 
 export default function Hero() {
-  const { openModal } = useAppointmentStore();
+  const sectionRef = useRef(null);
+  const inView = useInView(sectionRef, { once: true, margin: "-100px" });
 
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-white via-mint-light to-mint">
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 pt-8 pb-14 sm:pt-12 sm:pb-20 lg:pt-16 lg:pb-28">
-        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-          {/* Left Side */}
-          <div className="space-y-5 sm:space-y-7">
-            <span className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm border border-teal/20 rounded-full px-3 sm:px-4 py-1.5 text-teal font-semibold text-xs sm:text-sm shadow-sm">
-              <span className="w-2 h-2 rounded-full bg-teal animate-pulse" />
-              Your Health, Our Priority
-            </span>
+    <section ref={sectionRef} className="relative bg-white bg-no-repeat aspect-[4/5] lg:aspect-[2.75/1]">
 
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[3.5rem] font-bold leading-tight text-gray-900">
-              Comprehensive Care for a{" "}
-              <span className="text-gradient-teal">Better Life</span>
-            </h1>
+      {/* Mobile Banner */}
+      <div className="absolute inset-0 bg-[url('/banner/banner1.png')] bg-cover bg-center lg:hidden" />
 
-            <p className="text-gray-600 text-sm sm:text-base lg:text-lg leading-relaxed max-w-lg">
-              Consult top doctors, book appointments, order medicines, take lab
-              tests and manage your health from one platform.
-            </p>
+      {/* Desktop Banner */}
+      <div className="absolute inset-0 bg-[url('/banner/banner.png')] bg-cover bg-center hidden lg:block" />
 
-            {/* Feature Icons */}
-            <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-3 sm:gap-5">
-              {features.map((f) => (
-                <div
-                  key={f.label}
-                  className="flex items-center gap-2 text-xs sm:text-sm text-gray-600"
-                >
-                  <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-teal/10 flex items-center justify-center">
-                    <f.icon size={16} className="text-teal sm:hidden" />
-                    <f.icon size={18} className="text-teal hidden sm:block" />
-                  </div>
-                  <span className="font-medium">{f.label}</span>
-                </div>
-              ))}
-            </div>
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute -top-40 -right-40 w-[300px] lg:w-[600px] h-[300px] lg:h-[600px] rounded-full bg-gradient-to-br from-blue-100/50 to-transparent blur-3xl" />
+        <div className="absolute -bottom-40 -left-40 w-[250px] lg:w-[500px] h-[250px] lg:h-[500px] rounded-full bg-gradient-to-tr from-emerald-100/50 to-transparent blur-3xl" />
+        <div className="absolute top-1/3 left-1/4 w-32 lg:w-64 h-32 lg:h-64 rounded-full bg-blue-50/30 blur-2xl" />
+        <div className="absolute bottom-1/3 right-1/4 w-24 lg:w-48 h-24 lg:h-48 rounded-full bg-emerald-50/30 blur-2xl" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] lg:w-[800px] h-[400px] lg:h-[800px] rounded-full bg-gradient-to-br from-blue-50/20 via-transparent to-emerald-50/20 blur-3xl" />
 
-            {/* Buttons */}
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-2">
-              <Button
-                onClick={openModal}
-                className="gradient-teal text-white rounded-xl sm:rounded-2xl px-6 sm:px-8 h-11 sm:h-12 text-sm sm:text-base font-semibold shadow-premium hover:opacity-90 transition-all w-full sm:w-auto"
-              >
-                Book Appointment
-              </Button>
-              <Button
-                onClick={openModal}
-                variant="outline"
-                className="rounded-xl sm:rounded-2xl px-6 sm:px-8 h-11 sm:h-12 text-sm sm:text-base font-semibold border-teal/30 text-teal hover:bg-teal/5 w-full sm:w-auto"
-              >
-                Consult Online
-              </Button>
-            </div>
-          </div>
+        {crossIcons.map((c, i) => (
+          <svg
+            key={i}
+            className="absolute text-blue-600"
+            style={{
+              top: c.top,
+              right: c.right,
+              bottom: c.bottom,
+              left: c.left,
+              opacity: c.opacity,
+            }}
+            width={c.size}
+            height={c.size}
+            viewBox="0 0 24 24"
+            fill="currentColor"
+          >
+            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z" />
+          </svg>
+        ))}
 
-          {/* Right Side - Hidden on mobile, visible on lg */}
-          <div className="relative hidden lg:block">
-            <div className="relative rounded-3xl overflow-hidden shadow-premium">
-              <img
-                src="/hero-family.png"
-                alt="Healthcare family"
-                className="w-full h-[520px] object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-teal-dark/20 to-transparent" />
-            </div>
-
-            {/* Floating Appointment Card */}
-            <div
-              className="absolute -left-8 bottom-12 glass rounded-2xl p-5 shadow-premium w-[300px] cursor-pointer hover:shadow-card-hover transition-all group"
-              onClick={openModal}
-            >
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="font-bold text-gray-900 text-base">
-                  Book Appointment
-                </h3>
-                <CalendarCheck size={18} className="text-teal group-hover:scale-110 transition-transform" />
-              </div>
-              <div className="space-y-2.5">
-                <div className="w-full h-9 rounded-xl border border-gray-200 px-3 text-sm text-gray-400 bg-white flex items-center">
-                  Select Specialty
-                </div>
-                <div className="w-full h-9 rounded-xl border border-gray-200 px-3 text-sm text-gray-400 bg-white flex items-center">
-                  Select Doctor
-                </div>
-                <div className="grid grid-cols-2 gap-2">
-                  <div className="w-full h-9 rounded-xl border border-gray-200 px-3 text-sm text-gray-400 bg-white flex items-center">
-                    Select Date
-                  </div>
-                  <div className="w-full h-9 rounded-xl border border-gray-200 px-3 text-sm text-gray-400 bg-white flex items-center">
-                    Select Time
-                  </div>
-                </div>
-                <Button className="w-full gradient-teal text-white rounded-xl h-10 font-semibold mt-1 hover:opacity-90 transition-opacity">
-                  Find Available Slots
-                </Button>
-              </div>
-            </div>
-          </div>
-        </div>
+        <div className="absolute top-[15%] right-[22%] w-2 h-2 rounded-full bg-blue-300/30" />
+        <div className="absolute top-[35%] right-[28%] w-1.5 h-1.5 rounded-full bg-emerald-300/30" />
+        <div className="absolute bottom-[35%] left-[12%] w-2 h-2 rounded-full bg-blue-300/20" />
+        <div className="absolute bottom-[20%] left-[22%] w-1.5 h-1.5 rounded-full bg-emerald-300/20" />
       </div>
-
-      {/* Decorative blobs */}
-      <div className="absolute -top-32 -right-32 w-64 h-64 rounded-full bg-teal/5 blur-3xl" />
-      <div className="absolute -bottom-20 -left-20 w-48 h-48 rounded-full bg-teal/5 blur-3xl" />
     </section>
   );
 }

@@ -1,50 +1,53 @@
 import { create } from "zustand";
 
-export type PortalRole = "admin" | "doctor" | "lab";
+export type PortalRole = "admin" | "doctor" | "lab" | "medical" | "patient";
+
+interface AuthenticatedUser {
+  name: string;
+  email: string;
+  role: PortalRole;
+  id?: string;
+}
 
 interface AuthState {
-  // Login page visibility
   isLoginPageOpen: boolean;
   openLoginPage: () => void;
   closeLoginPage: () => void;
 
-  // Role selection
   selectedRole: PortalRole;
   setSelectedRole: (role: PortalRole) => void;
 
-  // Login loading
   isLoggingIn: boolean;
   setIsLoggingIn: (v: boolean) => void;
 
-  // Error
   loginError: string;
   setLoginError: (err: string) => void;
 
-  // Authenticated user info
   isAuthenticated: boolean;
   authenticatedRole: PortalRole | null;
-  authenticatedUser: {
-    name: string;
-    email: string;
-    role: PortalRole;
-    id?: string;
-  } | null;
+  authenticatedUser: AuthenticatedUser | null;
 
-  // Login action (handles credential check & dispatches to correct store)
-  login: (email: string, password: string, role: PortalRole) => boolean;
+  loginWithCredentials: (email: string, password: string) => boolean;
+  loginWithPatientId: (patientId: string, patientName: string, patientEmail: string) => boolean;
   logout: () => void;
 }
 
-// Demo credentials
-const DEMO_CREDENTIALS: Record<PortalRole, { email: string; password: string; name: string; id?: string }> = {
+interface DemoCredential {
+  email: string;
+  password: string;
+  name: string;
+  id?: string;
+}
+
+const DEMO_CREDENTIALS: Record<string, DemoCredential> = {
   admin: {
-    email: "admin@globalclinic.com",
-    password: "Admin@123",
+    email: "admin@gmail.com",
+    password: "admin123",
     name: "Super Admin",
   },
   doctor: {
-    email: "doctor@globalclinic.com",
-    password: "Doctor@123",
+    email: "doctor@gmail.com",
+    password: "doctor123",
     name: "Dr. Raj Sharma",
     id: "DOC-1001",
   },
@@ -54,54 +57,87 @@ const DEMO_CREDENTIALS: Record<PortalRole, { email: string; password: string; na
     name: "Global Diagnostic Lab",
     id: "LAB-1001",
   },
+  medical: {
+    email: "medical@globalclinic.com",
+    password: "medical123",
+    name: "Medical Store Manager",
+  },
 };
 
-export const useAuthStore = create<AuthState>((set, get) => ({
+function detectRoleByEmail(email: string): PortalRole | null {
+  const normalized = email.toLowerCase().trim();
+  for (const [role, cred] of Object.entries(DEMO_CREDENTIALS)) {
+    if (normalized === cred.email.toLowerCase()) {
+      return role as PortalRole;
+    }
+  }
+  return null;
+}
+
+export function isPatientId(value: string): boolean {
+  return /^PAT-\d{4}$/i.test(value.trim());
+}
+
+export const useAuthStore = create<AuthState>((set) => ({
   isLoginPageOpen: false,
-  openLoginPage: () => set({ isLoginPageOpen: true, loginError: "", selectedRole: "admin" }),
-  closeLoginPage: () => set({ isLoginPageOpen: false, loginError: "", isLoggingIn: false }),
-
-  selectedRole: "admin",
-  setSelectedRole: (role) => set({ selectedRole: role, loginError: "" }),
-
+  selectedRole: "admin" as PortalRole,
   isLoggingIn: false,
-  setIsLoggingIn: (v) => set({ isLoggingIn: v }),
-
   loginError: "",
-  setLoginError: (err) => set({ loginError: err }),
-
   isAuthenticated: false,
   authenticatedRole: null,
   authenticatedUser: null,
 
-  login: (email, password, role) => {
-    const demo = DEMO_CREDENTIALS[role];
+  openLoginPage: () => set({ isLoginPageOpen: true, loginError: "", selectedRole: "admin" }),
+  closeLoginPage: () => set({ isLoginPageOpen: false, loginError: "", isLoggingIn: false }),
 
-    if (
-      email.toLowerCase().trim() === demo.email.toLowerCase() &&
-      password === demo.password
-    ) {
-      set({
-        isAuthenticated: true,
-        authenticatedRole: role,
-        authenticatedUser: {
-          name: demo.name,
-          email: demo.email,
-          role,
-          id: demo.id,
-        },
-        isLoginPageOpen: false,
-        loginError: "",
-        isLoggingIn: false,
-      });
-      return true;
+  setSelectedRole: (role) => set({ selectedRole: role, loginError: "" }),
+  setIsLoggingIn: (v) => set({ isLoggingIn: v }),
+  setLoginError: (err) => set({ loginError: err }),
+
+  loginWithCredentials: (email, password) => {
+    const role = detectRoleByEmail(email);
+    if (!role) {
+      set({ loginError: "Invalid email or password", isLoggingIn: false });
+      return false;
+    }
+
+    const demo = DEMO_CREDENTIALS[role];
+    if (password !== demo.password) {
+      set({ loginError: "Invalid email or password", isLoggingIn: false });
+      return false;
     }
 
     set({
-      loginError: "Invalid Email or Password",
+      isAuthenticated: true,
+      authenticatedRole: role as PortalRole,
+      authenticatedUser: {
+        name: demo.name,
+        email: demo.email,
+        role: role as PortalRole,
+        id: demo.id,
+      },
+      isLoginPageOpen: false,
+      loginError: "",
       isLoggingIn: false,
     });
-    return false;
+    return true;
+  },
+
+  loginWithPatientId: (patientId, patientName, patientEmail) => {
+    set({
+      isAuthenticated: true,
+      authenticatedRole: "patient",
+      authenticatedUser: {
+        name: patientName,
+        email: patientEmail,
+        role: "patient",
+        id: patientId,
+      },
+      isLoginPageOpen: false,
+      loginError: "",
+      isLoggingIn: false,
+    });
+    return true;
   },
 
   logout: () => {

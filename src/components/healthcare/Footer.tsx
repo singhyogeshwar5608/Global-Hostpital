@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { motion } from "framer-motion";
 import {
   Facebook,
   Twitter,
@@ -10,9 +11,9 @@ import {
   Mail,
   MapPin,
   CreditCard,
-  ShieldCheck,
 } from "lucide-react";
 import { useAuthStore } from "@/store/auth-store";
+import { LogIn } from "lucide-react";
 
 const quickLinks = [
   "Home",
@@ -45,7 +46,14 @@ export default function Footer() {
   const { openLoginPage } = useAuthStore();
 
   return (
-    <footer className="bg-teal-dark text-white" id="contact">
+    <motion.footer
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-80px" }}
+      transition={{ duration: 0.6 }}
+      className="bg-teal-dark text-white"
+      id="contact"
+    >
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 pt-10 sm:pt-14 lg:pt-16 pb-6 sm:pb-8">
         <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-5 gap-6 sm:gap-8 lg:gap-10 mb-8 sm:mb-12">
           {/* Column 1: Logo & Description */}
@@ -91,16 +99,14 @@ export default function Footer() {
                   </a>
                 </li>
               ))}
-              {/* Single Admin Panel Button */}
-              <li className="pt-2 sm:pt-3 col-span-2 sm:col-span-1">
+              {/* Login */}
+              <li>
                 <button
                   onClick={openLoginPage}
-                  className="group flex items-center gap-2 text-xs sm:text-sm transition-all duration-300 rounded-lg sm:rounded-xl px-3 sm:px-4 py-2.5 sm:py-3 bg-gradient-to-r from-green-600 to-emerald-500 hover:from-green-500 hover:to-emerald-400 text-white font-semibold shadow-lg shadow-green-600/25 hover:shadow-green-500/40 hover:scale-[1.03] active:scale-[0.98]"
-                  title="Admin Panel - Login to access your portal"
+                  className="flex items-center gap-2 text-white/60 text-xs sm:text-sm hover:text-white transition-colors"
                 >
-                  <ShieldCheck size={16} className="sm:hidden transition-transform group-hover:scale-110" />
-                  <ShieldCheck size={18} className="hidden sm:block transition-transform group-hover:scale-110" />
-                  <span>Admin Panel</span>
+                  <LogIn size={14} />
+                  Login
                 </button>
               </li>
             </ul>
@@ -194,6 +200,6 @@ export default function Footer() {
           </div>
         </div>
       </div>
-    </footer>
+    </motion.footer>
   );
 }

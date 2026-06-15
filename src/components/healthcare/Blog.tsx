@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { motion } from "framer-motion";
 import { ArrowRight, Calendar, Tag } from "lucide-react";
 
 const blogs = [
@@ -32,7 +33,13 @@ const blogs = [
 
 export default function Blog() {
   return (
-    <section className="py-10 sm:py-14 lg:py-20 bg-white">
+    <motion.section
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-80px" }}
+      transition={{ duration: 0.6 }}
+      className="py-10 sm:py-14 lg:py-20 bg-white"
+    >
       <div className="max-w-[1200px] mx-auto px-4 sm:px-6">
         {/* Section Header */}
         <div className="flex items-center justify-between mb-6 sm:mb-8">
@@ -114,6 +121,6 @@ export default function Blog() {
           </a>
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 }

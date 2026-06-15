@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { motion } from "framer-motion";
 import {
   ShieldCheck,
   Award,
@@ -19,7 +20,14 @@ const features = [
 
 export default function WhyChooseUs() {
   return (
-    <section className="py-20 lg:py-28 bg-white" id="why-us">
+    <motion.section
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-80px" }}
+      transition={{ duration: 0.6 }}
+      className="py-20 lg:py-28 bg-white"
+      id="why-us"
+    >
       <div className="max-w-[1440px] mx-auto px-6">
         <div className="grid lg:grid-cols-2 gap-14 items-center">
           {/* Left Image */}
@@ -89,6 +97,6 @@ export default function WhyChooseUs() {
           </div>
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 }

@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useAuthStore, type PortalRole } from "@/store/auth-store";
+import { useAuthStore, isPatientId } from "@/store/auth-store";
+import { usePatientStore } from "@/store/patient-store";
 import { useAdminStore } from "@/store/admin-store";
 import { useDoctorPortalStore } from "@/store/doctor-portal-store";
 import { useLabStore } from "@/store/lab-store";
@@ -21,41 +22,8 @@ import {
   User,
   ArrowRight,
   CheckCircle2,
+  Pill,
 } from "lucide-react";
-
-const roleConfig: Record<PortalRole, {
-  icon: React.ElementType;
-  label: string;
-  loginText: string;
-  color: string;
-  activeColor: string;
-  bgColor: string;
-}> = {
-  admin: {
-    icon: ShieldCheck,
-    label: "Admin Portal",
-    loginText: "Login to Admin Portal",
-    color: "text-blue-600",
-    activeColor: "bg-blue-500",
-    bgColor: "bg-blue-50",
-  },
-  doctor: {
-    icon: Stethoscope,
-    label: "Doctor Portal",
-    loginText: "Login to Doctor Portal",
-    color: "text-teal-600",
-    activeColor: "bg-teal",
-    bgColor: "bg-teal-50",
-  },
-  lab: {
-    icon: FlaskConical,
-    label: "Lab Portal",
-    loginText: "Login to Lab Portal",
-    color: "text-purple-600",
-    activeColor: "bg-purple-500",
-    bgColor: "bg-purple-50",
-  },
-};
 
 const features = [
   { icon: Heart, title: "Expert Care", desc: "World-class medical professionals" },
@@ -68,109 +36,115 @@ export default function MultiRoleLogin() {
   const {
     isLoginPageOpen,
     closeLoginPage,
-    selectedRole,
-    setSelectedRole,
     isLoggingIn,
     setIsLoggingIn,
     loginError,
     setLoginError,
-    login,
+    loginWithCredentials,
+    loginWithPatientId,
   } = useAuthStore();
 
-  const { openPanel: openAdminPanel } = useAdminStore();
-  const { openPanel: openDoctorPanel, doctorLogin } = useDoctorPortalStore();
-  const { openLabPanel, setLabLoggedIn, labs } = useLabStore();
-
-  const [email, setEmail] = useState("");
+  const [emailOrId, setEmailOrId] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
 
-  // Load remembered credentials
-  useEffect(() => {
-    if (isLoginPageOpen) {
-      const saved = localStorage.getItem("gic_remembered");
-      if (saved) {
-        try {
-          const parsed = JSON.parse(saved);
-          setEmail(parsed.email || "");
-          setPassword(parsed.password || "");
-          setRememberMe(true);
-          if (parsed.role) setSelectedRole(parsed.role as PortalRole);
-        } catch {
-          // ignore
-        }
-      }
-    }
-  }, [isLoginPageOpen, setSelectedRole]);
+  const isPatientIdInput = isPatientId(emailOrId);
 
   // Reset form when page opens
   useEffect(() => {
     if (isLoginPageOpen) {
       setLoginError("");
+      setPassword("");
     }
   }, [isLoginPageOpen, setLoginError]);
 
   if (!isLoginPageOpen) return null;
 
-  const currentConfig = roleConfig[selectedRole];
+  const dispatchToPortal = () => {
+    const state = useAuthStore.getState();
+    const role = state.authenticatedRole;
+
+    if (role === "admin") {
+      useAdminStore.getState().openPanel();
+      useAdminStore.setState({ isLoggedIn: true, username: "admin@gmail.com" });
+    } else if (role === "doctor") {
+      const docId = state.authenticatedUser?.id || "DOC-1001";
+      const docName = state.authenticatedUser?.name || "Dr. Raj Sharma";
+      useDoctorPortalStore.getState().openPanel();
+      useDoctorPortalStore.getState().doctorLogin(docId, docName);
+    } else if (role === "lab") {
+      const labId = state.authenticatedUser?.id || "LAB-1001";
+      const lab = useLabStore.getState().labs.find((l) => l.id === labId);
+      if (lab) {
+        useLabStore.getState().openLabPanel();
+        useLabStore.getState().setLabLoggedIn(lab);
+      }
+    } else if (role === "medical") {
+      useAdminStore.getState().openPanel();
+      useAdminStore.setState({ isLoggedIn: true, username: "medical@globalclinic.com" });
+    } else if (role === "patient") {
+      const patientId = state.authenticatedUser?.id;
+      if (patientId) {
+        usePatientStore.getState().openPortal();
+      }
+    }
+  };
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     setLoginError("");
 
-    if (!email.trim() || !password.trim()) {
-      setLoginError("Please enter both email and password");
+    if (!emailOrId.trim()) {
+      setLoginError("Please enter your email or Patient ID");
       return;
     }
 
     setIsLoggingIn(true);
 
     setTimeout(() => {
-      const success = login(email, password, selectedRole);
+      let success = false;
+
+      if (isPatientIdInput) {
+        const { patients } = usePatientStore.getState();
+        const patient = patients.find(
+          (p) => p.id.toUpperCase() === emailOrId.trim().toUpperCase() && p.isActive
+        );
+        if (patient) {
+          success = loginWithPatientId(patient.id, patient.fullName, patient.email);
+        } else {
+          useAuthStore.getState().setLoginError("Invalid Patient ID. Please check and try again.");
+          setIsLoggingIn(false);
+          return;
+        }
+      } else {
+        success = loginWithCredentials(emailOrId, password);
+      }
 
       if (success) {
-        // Remember me
         if (rememberMe) {
           localStorage.setItem(
             "gic_remembered",
-            JSON.stringify({ email, password, role: selectedRole })
+            JSON.stringify({ email: emailOrId, password, role: "auto" })
           );
         } else {
           localStorage.removeItem("gic_remembered");
         }
-
-        // Dispatch to the correct portal store
-        const state = useAuthStore.getState();
-        if (state.authenticatedRole === "admin") {
-          openAdminPanel();
-        } else if (state.authenticatedRole === "doctor") {
-          const docId = state.authenticatedUser?.id || "DOC-1001";
-          const docName = state.authenticatedUser?.name || "Dr. Raj Sharma";
-          openDoctorPanel();
-          doctorLogin(docId, docName);
-        } else if (state.authenticatedRole === "lab") {
-          const labId = state.authenticatedUser?.id || "LAB-1001";
-          const lab = labs.find((l) => l.id === labId);
-          openLabPanel();
-          if (lab) {
-            setLabLoggedIn(lab);
-          }
-        }
+        dispatchToPortal();
       }
 
       setIsLoggingIn(false);
     }, 1000);
   };
 
-  const fillDemoCredentials = (role: PortalRole) => {
-    const creds: Record<PortalRole, { email: string; password: string }> = {
-      admin: { email: "admin@globalclinic.com", password: "Admin@123" },
-      doctor: { email: "doctor@globalclinic.com", password: "Doctor@123" },
+  const fillDemoCredentials = (role: "admin" | "doctor" | "lab" | "medical") => {
+    const creds: Record<string, { email: string; password: string }> = {
+      admin: { email: "admin@gmail.com", password: "admin123" },
+      doctor: { email: "doctor@gmail.com", password: "doctor123" },
       lab: { email: "lab@globalclinic.com", password: "Lab@123" },
+      medical: { email: "medical@globalclinic.com", password: "medical123" },
     };
-    setSelectedRole(role);
-    setEmail(creds[role].email);
+    setEmailOrId(creds[role].email);
     setPassword(creds[role].password);
     setLoginError("");
   };
@@ -300,35 +274,7 @@ export default function MultiRoleLogin() {
           {/* Welcome */}
           <div className="mb-8">
             <h2 className="text-2xl font-bold text-gray-900 mb-1">Welcome Back!</h2>
-            <p className="text-gray-500 text-sm">Login to access your portal</p>
-          </div>
-
-          {/* Role Tabs */}
-          <div className="flex gap-2 mb-8 p-1.5 bg-gray-100 rounded-xl">
-            {(Object.keys(roleConfig) as PortalRole[]).map((role) => {
-              const config = roleConfig[role];
-              const isActive = selectedRole === role;
-              const Icon = config.icon;
-              return (
-                <button
-                  key={role}
-                  type="button"
-                  onClick={() => {
-                    setSelectedRole(role);
-                    setLoginError("");
-                  }}
-                  className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg text-sm font-semibold transition-all duration-200 ${
-                    isActive
-                      ? "bg-white text-[#0a8a7a] shadow-md shadow-teal/10"
-                      : "text-gray-400 hover:text-gray-600"
-                  }`}
-                >
-                  <Icon size={16} className={isActive ? "text-[#0a8a7a]" : ""} />
-                  <span className="hidden sm:inline">{config.label}</span>
-                  <span className="sm:hidden">{role.charAt(0).toUpperCase() + role.slice(1)}</span>
-                </button>
-              );
-            })}
+            <p className="text-gray-500 text-sm">Enter your email or Patient ID to login</p>
           </div>
 
           {/* Login Form */}
@@ -341,52 +287,54 @@ export default function MultiRoleLogin() {
               </div>
             )}
 
-            {/* Email Field */}
+            {/* Email / Patient ID Field */}
             <div>
               <label className="text-sm font-semibold text-gray-700 mb-1.5 block">
-                User ID / Email
+                Email / Patient ID
               </label>
               <div className="relative">
                 <User size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
                 <input
-                  type="email"
-                  value={email}
+                  type="text"
+                  value={emailOrId}
                   onChange={(e) => {
-                    setEmail(e.target.value);
+                    setEmailOrId(e.target.value);
                     if (loginError) setLoginError("");
                   }}
-                  placeholder="Enter your email"
+                  placeholder="Enter your email or Patient ID (e.g., PAT-1001)"
                   className="w-full h-12 rounded-xl bg-gray-50 border border-gray-200 pl-10 pr-4 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#0a8a7a]/30 focus:border-[#0a8a7a] transition-all"
                 />
               </div>
             </div>
 
-            {/* Password Field */}
-            <div>
-              <label className="text-sm font-semibold text-gray-700 mb-1.5 block">
-                Password
-              </label>
-              <div className="relative">
-                <Lock size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
-                <input
-                  type={showPassword ? "text" : "password"}
-                  value={password}
-                  onChange={(e) => {
-                    setPassword(e.target.value);
-                    if (loginError) setLoginError("");
-                  }}
-                  placeholder="Enter your password"
-                  className="w-full h-12 rounded-xl bg-gray-50 border border-gray-200 pl-10 pr-12 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#0a8a7a]/30 focus:border-[#0a8a7a] transition-all"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
-                >
-                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                </button>
+            {/* Password Field (hidden for Patient ID login) */}
+            {!isPatientIdInput && (
+              <div>
+                <label className="text-sm font-semibold text-gray-700 mb-1.5 block">
+                  Password
+                </label>
+                <div className="relative">
+                  <Lock size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    value={password}
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+                      if (loginError) setLoginError("");
+                    }}
+                    placeholder="Enter your password"
+                    className="w-full h-12 rounded-xl bg-gray-50 border border-gray-200 pl-10 pr-12 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#0a8a7a]/30 focus:border-[#0a8a7a] transition-all"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                  >
+                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Remember Me & Forgot Password */}
             <div className="flex items-center justify-between">
@@ -432,13 +380,7 @@ export default function MultiRoleLogin() {
             <button
               type="submit"
               disabled={isLoggingIn}
-              className={`w-full h-12 rounded-xl font-semibold text-white shadow-lg transition-all duration-300 flex items-center justify-center gap-2 ${
-                selectedRole === "admin"
-                  ? "bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 shadow-blue-500/25"
-                  : selectedRole === "doctor"
-                  ? "bg-gradient-to-r from-[#0a8a7a] to-[#065a50] hover:from-[#065a50] hover:to-[#044a40] shadow-teal/25"
-                  : "bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 shadow-purple-500/25"
-              } disabled:opacity-70`}
+              className="w-full h-12 rounded-xl font-semibold text-white shadow-lg transition-all duration-300 flex items-center justify-center gap-2 bg-gradient-to-r from-[#0a8a7a] to-[#065a50] hover:from-[#065a50] hover:to-[#044a40] shadow-teal/25 disabled:opacity-70"
             >
               {isLoggingIn ? (
                 <span className="flex items-center gap-2">
@@ -448,7 +390,7 @@ export default function MultiRoleLogin() {
               ) : (
                 <span className="flex items-center gap-2">
                   <LogIn size={18} />
-                  {currentConfig.loginText}
+                  {isPatientIdInput ? "Access Dashboard" : "Login"}
                   <ArrowRight size={16} />
                 </span>
               )}
@@ -466,11 +408,12 @@ export default function MultiRoleLogin() {
           </div>
 
           {/* Quick Demo Buttons */}
-          <div className="grid grid-cols-3 gap-2 mb-6">
+          <div className="grid grid-cols-4 gap-2 mb-6">
             {([
-              { role: "admin" as PortalRole, icon: ShieldCheck, label: "Admin", color: "bg-blue-50 border-blue-200 text-blue-700 hover:bg-blue-100" },
-              { role: "doctor" as PortalRole, icon: Stethoscope, label: "Doctor", color: "bg-teal-50 border-teal-200 text-teal-700 hover:bg-teal-100" },
-              { role: "lab" as PortalRole, icon: FlaskConical, label: "Lab", color: "bg-purple-50 border-purple-200 text-purple-700 hover:bg-purple-100" },
+              { role: "admin" as const, icon: ShieldCheck, label: "Admin", color: "bg-blue-50 border-blue-200 text-blue-700 hover:bg-blue-100" },
+              { role: "doctor" as const, icon: Stethoscope, label: "Doctor", color: "bg-teal-50 border-teal-200 text-teal-700 hover:bg-teal-100" },
+              { role: "lab" as const, icon: FlaskConical, label: "Lab", color: "bg-purple-50 border-purple-200 text-purple-700 hover:bg-purple-100" },
+              { role: "medical" as const, icon: Pill, label: "Medical Store", color: "bg-amber-50 border-amber-200 text-amber-700 hover:bg-amber-100" },
             ]).map((item) => (
               <button
                 key={item.role}
@@ -496,7 +439,7 @@ export default function MultiRoleLogin() {
       </div>
 
       {/* Shake animation */}
-      <style jsx>{`
+      <style>{`
         @keyframes shake {
           0%, 100% { transform: translateX(0); }
           10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }

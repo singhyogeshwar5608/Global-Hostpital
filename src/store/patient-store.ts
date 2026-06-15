@@ -74,9 +74,44 @@ export interface PatientBooking {
   updatedAt: string;
 }
 
+export type ReferralStatus = "pending" | "accepted" | "in_progress" | "completed" | "cancelled";
+
+export interface LabReferral {
+  id: string;
+  patientId: string;
+  patientName: string;
+  doctorId: string;
+  doctorName: string;
+  labId: string;
+  labName: string;
+  selectedTests: string[];
+  testInstructions: string;
+  status: ReferralStatus;
+  reportId: string;
+  reportUploadedAt: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface PharmacyReferral {
+  id: string;
+  patientId: string;
+  patientName: string;
+  doctorId: string;
+  doctorName: string;
+  medicineIds: string[];
+  medicineNames: string[];
+  prescriptionNotes: string;
+  storeId: string;
+  storeName: string;
+  status: ReferralStatus;
+  createdAt: string;
+  updatedAt: string;
+}
+
 interface PatientState {
   patients: Patient[];
-  addPatient: (patient: Omit<Patient, "id" | "reports" | "isActive" | "registrationDate" | "createdAt" | "updatedAt">) => void;
+  addPatient: (patient: Omit<Patient, "id" | "reports" | "isActive" | "registrationDate" | "createdAt" | "updatedAt">) => string;
   updatePatient: (id: string, data: Partial<Patient>) => void;
   deletePatient: (id: string) => void;
   togglePatientStatus: (id: string) => void;
@@ -94,10 +129,23 @@ interface PatientState {
   updateBookingStatus: (id: string, status: PatientBooking["bookingStatus"]) => void;
   updatePaymentStatus: (id: string, status: PatientBooking["paymentStatus"]) => void;
 
+  // Referrals
+  labReferrals: LabReferral[];
+  pharmacyReferrals: PharmacyReferral[];
+  createLabReferral: (data: Omit<LabReferral, "id" | "status" | "reportId" | "reportUploadedAt" | "createdAt" | "updatedAt">) => LabReferral;
+  updateLabReferralStatus: (id: string, status: ReferralStatus) => void;
+  labUploadReport: (referralId: string, reportId: string) => void;
+  createPharmacyReferral: (data: Omit<PharmacyReferral, "id" | "status" | "createdAt" | "updatedAt">) => PharmacyReferral;
+  updatePharmacyReferralStatus: (id: string, status: ReferralStatus) => void;
+
   // Portal UI
   isPortalOpen: boolean;
   openPortal: () => void;
   closePortal: () => void;
+  portalTargetView: string;
+  setPortalTargetView: (view: string) => void;
+  patientViewingHomepage: boolean;
+  setPatientViewingHomepage: (v: boolean) => void;
 
   // Upload config
   maxFileSize: number; // in MB
@@ -413,9 +461,10 @@ export const usePatientStore = create<PatientState>((set, get) => ({
   patients: samplePatients,
 
   addPatient: (data) => {
+    const id = `PAT-${1000 + get().patients.length + 1}`;
     const patient: Patient = {
       ...data,
-      id: `PAT-${1000 + get().patients.length + 1}`,
+      id,
       reports: [],
       isActive: true,
       registrationDate: new Date().toISOString(),
@@ -423,6 +472,7 @@ export const usePatientStore = create<PatientState>((set, get) => ({
       updatedAt: new Date().toISOString(),
     };
     set((state) => ({ patients: [...state.patients, patient] }));
+    return id;
   },
 
   updatePatient: (id, data) => {
@@ -553,10 +603,68 @@ export const usePatientStore = create<PatientState>((set, get) => ({
     }));
   },
 
+  // ─── Referrals ────────────────────────────────────────
+  labReferrals: [],
+  pharmacyReferrals: [],
+
+  createLabReferral: (data) => {
+    const referral: LabReferral = {
+      ...data,
+      id: `LR-${Date.now().toString(36).toUpperCase()}`,
+      status: "pending",
+      reportId: "",
+      reportUploadedAt: "",
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    set((state) => ({ labReferrals: [referral, ...state.labReferrals] }));
+    return referral;
+  },
+
+  updateLabReferralStatus: (id, status) => {
+    set((state) => ({
+      labReferrals: state.labReferrals.map((r) =>
+        r.id === id ? { ...r, status, updatedAt: new Date().toISOString() } : r
+      ),
+    }));
+  },
+
+  labUploadReport: (referralId, reportId) => {
+    set((state) => ({
+      labReferrals: state.labReferrals.map((r) =>
+        r.id === referralId ? { ...r, reportId, reportUploadedAt: new Date().toISOString(), status: "completed" as ReferralStatus, updatedAt: new Date().toISOString() } : r
+      ),
+    }));
+  },
+
+  createPharmacyReferral: (data) => {
+    const referral: PharmacyReferral = {
+      ...data,
+      id: `PR-${Date.now().toString(36).toUpperCase()}`,
+      status: "pending",
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    set((state) => ({ pharmacyReferrals: [referral, ...state.pharmacyReferrals] }));
+    return referral;
+  },
+
+  updatePharmacyReferralStatus: (id, status) => {
+    set((state) => ({
+      pharmacyReferrals: state.pharmacyReferrals.map((r) =>
+        r.id === id ? { ...r, status, updatedAt: new Date().toISOString() } : r
+      ),
+    }));
+  },
+
   // ─── Portal UI ─────────────────────────────────────────
   isPortalOpen: false,
   openPortal: () => set({ isPortalOpen: true }),
   closePortal: () => set({ isPortalOpen: false }),
+  portalTargetView: "",
+  setPortalTargetView: (view) => set({ portalTargetView: view }),
+  patientViewingHomepage: false,
+  setPatientViewingHomepage: (v) => set({ patientViewingHomepage: v }),
 
   // ─── Upload Config ─────────────────────────────────────
   maxFileSize: 10, // 10 MB default

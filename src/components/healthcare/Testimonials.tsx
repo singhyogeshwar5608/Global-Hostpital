@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { motion } from "framer-motion";
 import { Star, ChevronLeft, ChevronRight, Quote } from "lucide-react";
 
 const testimonials = [
@@ -35,7 +36,13 @@ export default function Testimonials() {
     setCurrent((prev) => (prev - 1 + testimonials.length) % testimonials.length);
 
   return (
-    <section className="py-20 lg:py-28 bg-mint-light">
+    <motion.section
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-80px" }}
+      transition={{ duration: 0.6 }}
+      className="py-20 lg:py-28 bg-mint-light"
+    >
       <div className="max-w-[1440px] mx-auto px-6">
         <div className="text-center max-w-2xl mx-auto mb-14">
           <span className="inline-block text-teal font-semibold text-sm mb-3 tracking-wider uppercase">
@@ -119,6 +126,6 @@ export default function Testimonials() {
           </div>
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 }
